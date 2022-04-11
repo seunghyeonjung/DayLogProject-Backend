@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "start": "nodemon ./bin/www.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "bin": {
+    "server": "bin/www.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
