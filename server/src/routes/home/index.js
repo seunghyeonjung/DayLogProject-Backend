@@ -14,6 +14,7 @@ const ctrl=require("./user.ctrl");
 //router.get("/login", ctrl.output.login);
 router.post("/members/login", ctrl.process.login);
 router.post("/members/new", ctrl.process.register);
+router.post("/members/idCheck", ctrl.process.idCheck);
 
 router.get('/check', checkToken.auth.check);
 router.get('/update', checkToken.auth.update);

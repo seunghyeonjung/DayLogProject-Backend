@@ -45,11 +45,11 @@ class User{
 
                     return { success : true, AT : accessToken, RT : refreshToken, user : user.nickname};
                 }
-                return { success : false, msg: "비밀번호가 틀렸습니다." };
+                return { success : false, message: "비밀번호가 틀렸습니다." };
             }
-            return { success : false, msg: "존재하지 않는 아이디입니다." };
+            return { success : false, message: "존재하지 않는 아이디입니다." };
         } catch(err){
-            return { success : false, msg : err};
+            return { success : false, message : err};
         }
     }
 
@@ -59,9 +59,22 @@ class User{
             return res;
 
         }catch(err){
-            return { success : false, msg : err}
+            return { success : false, message : err}
         }
 
+    }
+
+    async idCheck(){
+        try{
+            const res=await UserStorage.getUserInfo(this.body.id);
+            if(res===undefined){
+                return {success : true};
+            }
+            else return {success : false, message : "existed"};
+
+        }catch(err){
+            return { success : false, message : err}
+        }
     }
 
 }

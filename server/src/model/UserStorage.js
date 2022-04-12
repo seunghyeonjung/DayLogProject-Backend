@@ -9,12 +9,28 @@ const db=require("../config/db");
 
 
 class UserStorage{
+    /*static getIdInfo(){
+        return new Promise((resolve, reject)=>{
+            const query="SELECT member_id FROM capstone_design.member";
+            db.query(query,(err, data)=>{
+                if(err) reject(err);
+                else resolve(data[0]);
+            });
+        });
+    }*/
+
     static getUserInfo(id){
         return new Promise((resolve, reject)=>{
             const query="SELECT * FROM capstone_design.member WHERE member_id=?";
             db.query(query, [id] ,(err, data)=>{
-                if(err) reject(err);
-                else resolve(data[0]);
+                if(err) {
+                    console.log(err.message);
+                    reject(err.message);
+                }
+                else{ 
+                    console.log(data[0]);
+                    resolve(data[0]);
+                }
             });
         });
     }

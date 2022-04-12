@@ -26,6 +26,12 @@ const process={
         console.log(res);
         return response.json(res);
     },
+    idCheck : async function(request, response){
+        const user=new User(request.body);
+        const res=await user.idCheck();
+        console.log(res);
+        return response.json(res);
+    }
 }
 
 //hello: hello와 동일하게 저장된 것

@@ -37,22 +37,22 @@ const auth={
         const accessToken = request.body.access_token;
 
         
-            const decoded =verify.verifyToken(accessToken);
+        const decoded =verify.verifyToken(accessToken);
 
-            console.log(decoded);
+        console.log(decoded);
 
-            if (decoded === "jwt_expired") {
-                response.status(401).send({
-                  message: "JWT_EXPIRED",
-                });
-              } 
-              else if(decoded==="unexpected_token")
-                response.status(400).send({
-                  message: "JWT_FAIL",
-              });
-              else{
-                  response.send(decoded);
-              }
+        if (decoded === "jwt_expired") {
+            response.status(401).send({
+                message: "JWT_EXPIRED",
+        });
+        } 
+        else if(decoded==="unexpected_token")
+        response.status(400).send({
+            message: "JWT_FAIL",
+        });
+        else{
+            response.send(decoded);
+        }
           
             //console.log(err.message);
             // access 토큰이 만료된 경우  => 만료되었다는 메시지 전송
@@ -68,10 +68,9 @@ const auth={
         console.log(refreshToken);
        
         const res=verify.verifyToken(refreshToken);
-        const dbToken=await UserStorage.getUserToken(res.userId);
 
 
-        if(dbToken){
+        /*if(dbToken){
             //const result=verify.verifyToken(refreshToken);
             //console.log(result);
             if(res==="jwt expired"){
@@ -97,7 +96,27 @@ const auth={
             }
         }
         else return response.json({ success : false, msg : "Refresh Token이 없습니다."});      
+        }*/
+
+        if(res==="jwt expired") return response.json({ success : false, message : "JWT_EXPIRED"});
+        else{
+            const dbToken=await UserStorage.getUserToken(res.userId);
+            if(dbToken.token===refreshToken){
+                const user=await UserStorage.getUserInfo(res.userId);
+                const new_accessToken=jwt.sign({
+                    userId : user.member_id,
+                    userName : user.name
+                }, 
+                secret,
+                {
+                    expiresIn:'1h'
+                });
+                return response.json({ success : true, AT : new_accessToken});
+            }
+            else return response.json({ success : false, message : "Refresh Token이 일치하지 않습니다."});
         }
+    }
+
     }
 
 module.exports={
