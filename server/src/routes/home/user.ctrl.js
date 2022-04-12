@@ -18,7 +18,7 @@ const process={
             httpOnly: true,
             secure: true,
         });
-        return response.send({success : res.success, AT : res.AT, user : res.user});
+        return response.send({success : res.success, AT : res.AT, user : res.user, message : res.message});
     },
     register : async function(request, response){
         const user=new User(request.body);
