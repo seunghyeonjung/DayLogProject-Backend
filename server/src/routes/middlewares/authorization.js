@@ -12,7 +12,24 @@ const auth={
         const accessToken=request.headers["authorization"]; //front에서 헤더에 담아준 accesstoken
         console.log(accessToken);
 
-        if(accessToken===undefined){
+        const decoded =verify.verifyToken(accessToken);
+
+        if (decoded === "jwt_expired") {
+            response.status(401).send({
+                message: "JWT_EXPIRED",
+        });
+        } 
+        else if(decoded==="unexpected_token")
+        response.status(400).send({
+            message: "JWT_FAIL",
+        });
+        else{
+            request.userId=decoded.userId;
+            console.log(request.userId);
+            next();
+        }
+
+        /*if(accessToken===undefined){
             return response.json({ success : false, msg : "no Access Token"});
         }
         
@@ -22,14 +39,14 @@ const auth={
 
         if(res==="jwt expired"){//accesstoken 만료
             return response.json({ success : false, msg : "Access Token 만료"});
-        }
+        }*/
         /*else if(res==="jwt "){
 
         }*/
-        else{ 
+        /*else{ 
             console.log("ok");
             next();
-        }
+        }*/
         
     },
 

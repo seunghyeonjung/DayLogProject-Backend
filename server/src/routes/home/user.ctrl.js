@@ -20,12 +20,22 @@ const process={
         });
         return response.send({success : res.success, AT : res.AT, user : res.user, message : res.message});
     },
+
+    logout : async function(request, response){
+        //request.userId="test123";
+        const user=new User(request.userId); 
+        const res=await user.logout();
+        console.log(res);
+        response.clearCookie("refreshToken").send();
+    },
+
     register : async function(request, response){
         const user=new User(request.body);
         const res=await user.register();
         console.log(res);
         return response.json(res);
     },
+
     idCheck : async function(request, response){
         const user=new User(request.body);
         const res=await user.idCheck();

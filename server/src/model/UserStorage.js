@@ -65,6 +65,16 @@ class UserStorage{
         })
     }
 
+    static removeToken(id){
+        return new Promise((resolve, reject)=>{
+            const query="DELETE FROM capstone_design.tokens WHERE member_id=?";
+            db.query(query, [id] ,(err)=>{
+                if(err) reject(err);
+                else resolve({success : true});
+            });
+        })
+    }
+
 }
 
 module.exports=UserStorage;

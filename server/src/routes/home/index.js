@@ -12,10 +12,13 @@ const ctrl=require("./user.ctrl");
 
 //router.get("/", ctrl.output.hello);
 //router.get("/login", ctrl.output.login);
-router.post("/members/login", ctrl.process.login);
-router.post("/members/new", ctrl.process.register);
-router.post("/members/idCheck", ctrl.process.idCheck);
+router.post("/members/login", ctrl.process.login); //로그인
+router.delete("/members/logout", checkToken.auth.check, ctrl.process.logout);
+router.post("/members/new", ctrl.process.register); //회원가입
+router.post("/members/idCheck", ctrl.process.idCheck); //아이디 중복 체크
+//router.delete("/members/logout", ctrl.process.logout);
 
+//토큰 관련
 router.get('/check', checkToken.auth.check);
 router.get('/update', checkToken.auth.update);
 router.post('/autoLogin', checkToken.auth.auto);

@@ -23,7 +23,7 @@ class User{
                     }, 
                     secret,
                     {
-                        expiresIn:'1s'
+                        expiresIn:'1h'
                     });
                    
 
@@ -51,6 +51,17 @@ class User{
         } catch(err){
             return { success : false, message : err};
         }
+    }
+
+    async logout(){
+        try{
+            const res=await UserStorage.removeToken(this.body);
+            return res;
+
+        }catch(err){
+            return { success : false, message : err}
+        }
+
     }
 
     async register(){
