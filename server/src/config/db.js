@@ -12,4 +12,9 @@ db.connect((err)=>{
     if(err) throw err;
 });
 
+/*const query="SELECT * FROM capstone_design.member";
+            db.query(query ,(err, data)=>{
+                console.log(data[1]);
+            });*/
+
 module.exports=db;
