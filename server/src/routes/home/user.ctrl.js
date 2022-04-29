@@ -18,11 +18,12 @@ const process={
             httpOnly: true,
             secure: true,
         });
-        return response.send({success : res.success, AT : res.AT, user : res.user, message : res.message});
+        if(res.success===true) return response.send({success : res.success, AT : res.AT, user : res.user, message : res.message});
+        else return response.status(401).send(res.message);
     },
 
     logout : async function(request, response){
-        request.userId="test123"; //실제 test 시 주석 처리
+        request.userId="test123"; //실제 test 시 주석
         const user=new User(request.userId); 
         const res=await user.logout();
         console.log(res);
