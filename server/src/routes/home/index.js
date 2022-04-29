@@ -15,7 +15,8 @@ const todo_ctrl=require("./todo.ctrl");
 //router.get("/", user_ctrl.output.hello);
 //router.get("/login", user_ctrl.output.login);
 router.post("/members/login", user_ctrl.process.login); //로그인
-router.delete("/members/logout", checkToken.auth.check, user_ctrl.process.logout);//로그아웃
+//router.delete("/members/logout", checkToken.auth.check, user_ctrl.process.logout);//로그아웃
+router.delete("/members/logout", user_ctrl.process.logout); //logout test 때만 사용
 router.post("/members/new", user_ctrl.process.register); //회원가입
 router.post("/members/idCheck", user_ctrl.process.idCheck); //아이디 중복 체크
 //router.delete("/members/logout", user_ctrl.process.logout);
@@ -27,9 +28,10 @@ router.post('/autoLogin', checkToken.auth.auto);
 
 //todolist 관련
 router.get("/todolist", checkToken.auth.check, todo_ctrl.process.getTodo);
+router.get("/todolist/calendar", checkToken.auth.check, todo_ctrl.process.getTodo);
+router.get("/todolist/check", checkToken.auth.check, todo_ctrl.process.modifyTodo);
 router.post("/todolist", checkToken.auth.check, todo_ctrl.process.saveTodo);
 router.delete("/todolist",checkToken.auth.check, todo_ctrl.process.removeTodo);
-router.get("/todolist/check", checkToken.auth.check, todo_ctrl.process.modifyTodo);
 //router.
 
 module.exports=router;

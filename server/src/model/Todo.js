@@ -13,8 +13,50 @@ class Todo{
 
     async getTodo(){
         try{
-            console.log(this.req.userId+", "+this.req.query.date);
-            const res=await TodoStorage.getTodo(this.req.userId, this.req.query.date);
+            let today=new Date();
+            let year=today.getFullYear();
+            let res;
+            let where;
+            let last_day;
+
+            switch(this.req.query.month){
+                case "01" : last_day=new Date(year, 1, 0).getDate(); 
+                break;
+                case "02" : last_day=new Date(year, 2, 0).getDate(); 
+                break;
+                case "03" : last_day=new Date(year, 3, 0).getDate(); 
+                break;
+                case "04" : last_day=new Date(year, 4, 0).getDate(); 
+                break;
+                case "05" : last_day=new Date(year, 5, 0).getDate(); 
+                break;
+                case "06" : last_day=new Date(year, 6, 0).getDate(); 
+                break;
+                case "07" : last_day=new Date(year, 7, 0).getDate(); 
+                break;
+                case "08" : last_day=new Date(year, 8, 0).getDate(); 
+                break;
+                case "09" : last_day=new Date(year, 9, 0).getDate(); 
+                break;
+                case "10" : last_day=new Date(year, 10, 0).getDate(); 
+                break;
+                case "11" : last_day=new Date(year, 11, 0).getDate(); 
+                break;
+                case "12" : last_day=new Date(year, 0, 0).getDate(); 
+                break;
+            }
+            //console.log(year+", "+last_day);
+            //console.log(this.req.userId+", "+this.req.query.date);
+            //console.log(this.req.userId+", "+this.req.query.month);
+            
+            if(this.req.query.date===undefined) {
+                where="WHERE member_id=? AND (DATE(todo_date) BETWEEN '"+year+"-"+this.req.query.month+"-01' AND '"+year+"-"+this.req.query.month+"-"+last_day+"')";
+                res=await TodoStorage.getTodo(this.req.userId, where);
+            }
+            else{
+                where="WHERE member_id=? AND DATE(todo_date)="+"'"+this.req.query.date+"'";
+                res=await TodoStorage.getTodo(this.req.userId, where);
+            }
             return res;
 
         }catch(err){

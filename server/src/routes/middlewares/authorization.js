@@ -10,7 +10,7 @@ const UserStorage=require("../../model/UserStorage");
 const auth={
     check : async function(request, response, next){
         const accessToken=request.headers["authorization"]; //front에서 헤더에 담아준 accesstoken
-        console.log(accessToken);
+        //console.log(accessToken);
 
         const decoded =verify.verifyToken(accessToken);
 
@@ -25,7 +25,7 @@ const auth={
         });
         else{
             request.userId=decoded.userId;
-            console.log(request.userId);
+            //console.log(request.userId);
             next();
         }
 
@@ -56,7 +56,7 @@ const auth={
         
         const decoded =verify.verifyToken(accessToken);
 
-        console.log(decoded);
+        //console.log(decoded);
 
         if (decoded === "jwt_expired") {
             response.status(401).send({
@@ -82,7 +82,7 @@ const auth={
     update : async function(request, response){
         const refreshToken=request.headers.cookie.split("=")[1];
 
-        console.log(refreshToken);
+        //console.log(refreshToken);
        
         const res=verify.verifyToken(refreshToken);
 

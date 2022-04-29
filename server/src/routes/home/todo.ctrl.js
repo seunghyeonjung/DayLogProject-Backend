@@ -7,9 +7,9 @@ const Todo = require("../../model/Todo");
 const process={
     getTodo : async function(request, response){
         const todo=new Todo(request);
-        const res=await todo.getTodo();
-        console.log(res);
-        return response.json(res);
+        const todos=await todo.getTodo();
+        //console.log(todos);
+        return response.json(todos);
     },
 
     saveTodo : async function(request, response){

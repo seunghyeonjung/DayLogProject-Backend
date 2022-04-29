@@ -4,27 +4,11 @@ const db=require("../config/db");
 
 
 class TodoStorage{
-
-    /*static getUserInfo(id){
+    static getTodo(id, where){
         return new Promise((resolve, reject)=>{
-            const query="SELECT * FROM capstone_design.member WHERE member_id=?";
+            //console.log(where);
+            const query="SELECT *, DATE_FORMAT(todo_date,'%Y-%m-%d') AS todo_date FROM capstone_design.todo " + where;
             db.query(query, [id] ,(err, data)=>{
-                if(err) {
-                    console.log(err.message);
-                    reject(err.message);
-                }
-                else{ 
-                    console.log(data[0]);
-                    resolve(data[0]);
-                }
-            });
-        });
-    }*/
-
-    static getTodo(id, date){
-        return new Promise((resolve, reject)=>{
-            const query="SELECT *, DATE_FORMAT(todo_date,'%Y-%m-%d') AS todo_date FROM capstone_design.todo WHERE member_id=? AND DATE(todo_date)=?";
-            db.query(query, [id, date] ,(err, data)=>{
                 if(err) reject(err);
                 else resolve(data);
             });

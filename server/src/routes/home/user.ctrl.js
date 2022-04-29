@@ -22,7 +22,7 @@ const process={
     },
 
     logout : async function(request, response){
-        //request.userId="test123";
+        request.userId="test123"; //실제 test 시 주석 처리
         const user=new User(request.userId); 
         const res=await user.logout();
         console.log(res);
