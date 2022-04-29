@@ -10,6 +10,7 @@ const checkToken=require("../middlewares/authorization");
 
 const user_ctrl=require("./user.ctrl");
 const todo_ctrl=require("./todo.ctrl");
+const schedule_ctrl=require("./schedule.ctrl");
 
 
 //router.get("/", user_ctrl.output.hello);
@@ -32,6 +33,12 @@ router.get("/todolist/calendar", checkToken.auth.check, todo_ctrl.process.getTod
 router.get("/todolist/check", checkToken.auth.check, todo_ctrl.process.modifyTodo);
 router.post("/todolist", checkToken.auth.check, todo_ctrl.process.saveTodo);
 router.delete("/todolist",checkToken.auth.check, todo_ctrl.process.removeTodo);
-//router.
+
+//일정 관련
+router.get("/schedule", checkToken.auth.check, schedule_ctrl.process.getSchedule);
+router.get("/schedule/calendar", checkToken.auth.check, schedule_ctrl.process.getSchedule);
+router.put("/schedule", checkToken.auth.check, schedule_ctrl.process.modifySchedule);
+router.post("/schedule", checkToken.auth.check, schedule_ctrl.process.saveSchedule);
+router.delete("/schedule",checkToken.auth.check, schedule_ctrl.process.removeSchedule);
 
 module.exports=router;

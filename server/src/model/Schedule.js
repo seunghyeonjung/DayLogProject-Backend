@@ -1,17 +1,13 @@
 "use strict"
-//User=데이터를 가지고 검증 및 조작하는 역할만 수행
-//jwt=header의 인코딩 값과 payload의 인코딩 값을 합친 해시값
 
-const TodoStorage=require("./TodoStorage");
-const jwt=require('jsonwebtoken');
-const secret=process.env.JWT_SECRET_KEY;
+const ScheduleStorage=require("./ScheduleStorage");
 
-class Todo{
+class Schedule{
     constructor(req){
         this.req=req;
     }
 
-    async getTodo(){
+    async getSchedule(){
         try{
             let today=new Date();
             let year=today.getFullYear();
@@ -45,16 +41,17 @@ class Todo{
                 case "12" : last_day=new Date(year, 0, 0).getDate(); 
                 break;
             }
-            //console.log(year+", "+last_day);
-            //console.log(this.req.userId+", "+this.req.query.date);
-            //console.log(this.req.userId+", "+this.req.query.month);
+            console.log(year+", "+last_day);
+            console.log(this.req.userId+", "+this.req.query.date);
+            console.log(this.req.userId+", "+this.req.query.month);
+            
             if(this.req.query.date===undefined) {
-                where="WHERE member_id=? AND (DATE(todo_date) BETWEEN '"+year+"-"+this.req.query.month+"-01' AND '"+year+"-"+this.req.query.month+"-"+last_day+"') ORDER BY todo_date ASC";
-                res=await TodoStorage.getTodo(this.req.userId, where);
+                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+this.req.query.month+"-01' AND '"+year+"-"+this.req.query.month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+                res=await ScheduleStorage.getSchedule(this.req.userId, where);
             }
             else{
-                where="WHERE member_id=? AND DATE(todo_date)="+"'"+this.req.query.date+"'";
-                res=await TodoStorage.getTodo(this.req.userId, where);
+                where="WHERE member_id=? AND DATE(schedule_start_date)="+"'"+this.req.query.date+"'";
+                res=await ScheduleStorage.getSchedule(this.req.userId, where);
             }
             return res;
 
@@ -63,12 +60,12 @@ class Todo{
         }
     }
 
-    async saveTodo(){
+    async saveSchedule(){
         try{
             //test 할 때만 userId -> 끝난 후 this.req.userId
             //userId="test123";
-            console.log(this.req.body.content+", "+this.req.body.date);
-            const res=await TodoStorage.saveTodo(this.req.userId, this.req.body.content, this.req.body.date);
+            console.log(this.req.body.title+", "+this.req.body.content+", "+this.req.body.start_date+", "+this.req.body.end_date);
+            const res=await ScheduleStorage.saveSchedule(this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
             return res;
 
         }catch(err){
@@ -76,12 +73,12 @@ class Todo{
         }
     }
 
-    async removeTodo(){
+    async removeSchedule(){
         try{
             //test 할 때만 userId -> 끝난 후 this.req.userId
             //userId="test123";
             console.log(this.req.query.no);
-            const res=await TodoStorage.removeTodo(this.req.query.no);
+            const res=await ScheduleStorage.removeSchedule(this.req.query.no);
             return res;
 
         }catch(err){
@@ -89,25 +86,14 @@ class Todo{
         }
     }
 
-    async modifyTodo(){
+    async modifySchedule(){
         try{
             //test 할 때만 userId -> 끝난 후 this.req.userId
             //userId="test123";
-            console.log(this.req.query.no);
-            const index=this.req.query.no;
-            let change;
-            let res;
-            const check=await TodoStorage.getCheck(index);
-            console.log(check);
-            console.log(check.todo_checked);
-            if(check.todo_checked===0){
-                change=1;
-                res=await TodoStorage.modifyTodo(change, index);
-            }
-            else{
-                change=0;
-                res=await TodoStorage.modifyTodo(change, index);
-            }
+            console.log(this.req.query.no+", "+this.req.userId);
+            console.log(this.req.body.title+", "+this.req.body.content+", "+this.req.body.start_date+", "+this.req.body.end_date);
+
+            const res=await ScheduleStorage.modifySchedule(this.req.query.no, this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
             return res;
 
         }catch(err){
@@ -117,4 +103,4 @@ class Todo{
 
 }
 
-module.exports=Todo;
+module.exports=Schedule;

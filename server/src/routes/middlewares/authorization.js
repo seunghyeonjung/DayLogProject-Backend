@@ -25,7 +25,7 @@ const auth={
         });
         else{
             request.userId=decoded.userId;
-            //console.log(request.userId);
+            console.log(request.userId);
             next();
         }
 
