@@ -35,7 +35,7 @@ router.post("/todolist", checkToken.auth.check, todo_ctrl.process.saveTodo);
 router.delete("/todolist",checkToken.auth.check, todo_ctrl.process.removeTodo);
 
 //일정 관련
-router.get("/schedule", checkToken.auth.check, schedule_ctrl.process.getSchedule);
+//router.get("/schedule", checkToken.auth.check, schedule_ctrl.process.getSchedule);
 router.get("/schedule/calendar", checkToken.auth.check, schedule_ctrl.process.getSchedule);
 router.put("/schedule", checkToken.auth.check, schedule_ctrl.process.modifySchedule);
 router.post("/schedule", checkToken.auth.check, schedule_ctrl.process.saveSchedule);
