@@ -14,23 +14,23 @@ const process={
 
     saveSchedule : async function(request, response){
         const schedule=new Schedule(request);
-        const res=await schedule.saveSchedule();
-        console.log(res);
-        return response.json(res);
+        const schedules=await schedule.saveSchedule();
+        console.log(schedules);
+        return response.json(schedules);
     },
 
     removeSchedule : async function(request, response){
         const schedule=new Schedule(request);
-        const res=await schedule.removeSchedule();
-        console.log(res);
-        return response.json(res);
+        const schedules=await schedule.removeSchedule();
+        console.log(schedules);
+        return response.json(schedules);
     },
 
     modifySchedule : async function(request, response){
         const schedule=new Schedule(request);
-        const res=await schedule.modifySchedule();
-        console.log(res);
-        return response.json(res);
+        const schedules=await schedule.modifySchedule();
+        console.log(schedules);
+        return response.json(schedules);
     },
 
 
