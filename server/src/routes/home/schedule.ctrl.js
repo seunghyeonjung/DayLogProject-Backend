@@ -7,30 +7,30 @@ const Schedule = require("../../model/Schedule");
 const process={
     getSchedule : async function(request, response){
         const schedule=new Schedule(request);
-        const schedules=await schedule.getSchedule();
-        console.log(schedules);
-        return response.json(schedules);
+        const month_schedules=await schedule.getSchedule();
+        console.log(month_schedules);
+        return response.json(month_schedules);
     },
 
     saveSchedule : async function(request, response){
         const schedule=new Schedule(request);
-        const schedules=await schedule.saveSchedule();
-        console.log(schedules);
-        return response.json(schedules);
+        const month_schedules=await schedule.saveSchedule();
+        console.log(month_schedules);
+        return response.json(month_schedules);
     },
 
     removeSchedule : async function(request, response){
         const schedule=new Schedule(request);
-        const schedules=await schedule.removeSchedule();
-        console.log(schedules);
-        return response.json(schedules);
+        const month_schedules=await schedule.removeSchedule();
+        console.log(month_schedules);
+        return response.json(month_schedules);
     },
 
     modifySchedule : async function(request, response){
         const schedule=new Schedule(request);
-        const schedules=await schedule.modifySchedule();
-        console.log(schedules);
-        return response.json(schedules);
+        const month_schedules=await schedule.modifySchedule();
+        console.log(month_schedules);
+        return response.json(month_schedules);
     },
 
 

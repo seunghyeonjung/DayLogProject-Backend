@@ -44,7 +44,6 @@ class Schedule{
 
     async getSchedule(){
         try{
-            let res;
             let where;
             let last_day=getDay(this.req.query.year, this.req.query.month);
 
@@ -55,7 +54,7 @@ class Schedule{
             
   
             where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+this.req.query.year+"-"+this.req.query.month+"-01' AND '"+this.req.query.year+"-"+this.req.query.month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
-            res=await ScheduleStorage.getSchedule(this.req.userId, where);
+            const res=await ScheduleStorage.getSchedule(this.req.userId, where);
             
             
             return res;
@@ -69,7 +68,7 @@ class Schedule{
         try{
             //test 할 때만 userId -> 끝난 후 this.req.userId
             //userId="test123";
-            console.log(this.req.body.title+", "+this.req.body.content+", "+this.req.body.start_date+", "+this.req.body.end_date);
+            //console.log(this.req.body.title+", "+this.req.body.content+", "+this.req.body.start_date+", "+this.req.body.end_date);
             let where;
             const date=this.req.body.start_date;
             const year=date.substr(0,4);
@@ -78,9 +77,12 @@ class Schedule{
 
             const res=await ScheduleStorage.saveSchedule(this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
             //반환값으로 수정한 달의 schedule 다 보냄
-            where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
-            const schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
-            return schedules;
+            if(res.success==true){
+                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+                const schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
+                return schedules;
+            }
+            return res;
 
         }catch(err){
             return { success : false, message : err}
@@ -102,10 +104,13 @@ class Schedule{
     
             const res=await ScheduleStorage.removeSchedule(index);
 
-            where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
-            const schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
-            //반환값으로 수정한 달의 schedule 다 보냄
-            return schedules;
+            if(res.success==true){
+                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+                const schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
+                //반환값으로 수정한 달의 schedule 다 보냄
+                return schedules;
+            }
+            return res;
 
         }catch(err){
             return { success : false, message : err}
@@ -130,10 +135,13 @@ class Schedule{
 
             const res=await ScheduleStorage.modifySchedule(index, this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
 
-            where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
-            const schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
-            //반환값으로 수정한 달의 schedule 다 보냄
-            return schedules;
+            if(res.success==true){
+                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+                const schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
+                //반환값으로 수정한 달의 schedule 다 보냄
+                return schedules;
+            }
+            return res;
 
         }catch(err){
             return { success : false, message : err}

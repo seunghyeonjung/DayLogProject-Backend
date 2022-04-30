@@ -122,13 +122,15 @@ class Todo{
         try{
             //test 할 때만 userId -> 끝난 후 this.req.userId
             //userId="test123";
-            const date=(await TodoStorage.getCheck(this.req.query.no)).todo_date;
-            const year=date.substr(0,4);
-            const month=date.substr(5,2);
+            const index=this.req.query.no;
+            let where="WHERE member_id=? AND todo_no="+index;
+            const result=await TodoStorage.getTodo(this.req.userId, where);
+            const year=(result[0].todo_date).substr(0,4);
+            const month=(result[0].todo_date).substr(5,2);
             let last_day=getDay(year, month);
             let month_todos=[];
             
-            const res=await TodoStorage.removeTodo(this.req.query.no);
+            const res=await TodoStorage.removeTodo(index);
             
             if(res.success==true){
                 month_todos=oneDayData(year, month, last_day, this.req.userId);

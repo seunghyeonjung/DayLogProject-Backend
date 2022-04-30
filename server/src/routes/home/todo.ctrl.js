@@ -7,30 +7,30 @@ const Todo = require("../../model/Todo");
 const process={
     getTodo : async function(request, response){
         const todo=new Todo(request);
-        const todos=await todo.getTodo();
+        const month_todos=await todo.getTodo();
         //console.log(todos);
         return response.json(todos);
     },
 
     saveTodo : async function(request, response){
         const todo=new Todo(request);
-        const todos=await todo.saveTodo();
-        console.log(todos);
-        return response.json(todos);
+        const month_todos=await todo.saveTodo();
+        //console.log(month_todos);
+        return response.json(month_todos);
     },
 
     removeTodo : async function(request, response){
         const todo=new Todo(request);
-        const todos=await todo.removeTodo();
-        console.log(todos);
-        return response.json(todos);
+        const month_todos=await todo.removeTodo();
+        //console.log(month_todos);
+        return response.json(month_todos);
     },
 
     modifyTodo : async function(request, response){
         const todo=new Todo(request);
-        const todos=await todo.modifyTodo();
-        //console.log(todos);
-        return response.json(todos);
+        const month_todos=await todo.modifyTodo();
+        //console.log(month_todos);
+        return response.json(month_todos);
     },
 
 
