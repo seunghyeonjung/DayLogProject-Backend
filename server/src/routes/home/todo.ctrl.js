@@ -14,23 +14,23 @@ const process={
 
     saveTodo : async function(request, response){
         const todo=new Todo(request);
-        const res=await todo.saveTodo();
-        console.log(res);
-        return response.json(res);
+        const todos=await todo.saveTodo();
+        console.log(todos);
+        return response.json(todos);
     },
 
     removeTodo : async function(request, response){
         const todo=new Todo(request);
-        const res=await todo.removeTodo();
-        console.log(res);
-        return response.json(res);
+        const todos=await todo.removeTodo();
+        console.log(todos);
+        return response.json(todos);
     },
 
     modifyTodo : async function(request, response){
         const todo=new Todo(request);
-        const res=await todo.modifyTodo();
-        console.log(res);
-        return response.json(res);
+        const todos=await todo.modifyTodo();
+        //console.log(todos);
+        return response.json(todos);
     },
 
 

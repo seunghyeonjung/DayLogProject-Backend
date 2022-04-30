@@ -28,7 +28,7 @@ router.get('/update', checkToken.auth.update);
 router.post('/autoLogin', checkToken.auth.auto);
 
 //todolist 관련
-router.get("/todolist", checkToken.auth.check, todo_ctrl.process.getTodo);
+//router.get("/todolist", checkToken.auth.check, todo_ctrl.process.getTodo);
 router.get("/todolist/calendar", checkToken.auth.check, todo_ctrl.process.getTodo);
 router.get("/todolist/check", checkToken.auth.check, todo_ctrl.process.modifyTodo);
 router.post("/todolist", checkToken.auth.check, todo_ctrl.process.saveTodo);

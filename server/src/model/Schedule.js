@@ -66,6 +66,7 @@ class Schedule{
             //userId="test123";
             console.log(this.req.body.title+", "+this.req.body.content+", "+this.req.body.start_date+", "+this.req.body.end_date);
             const res=await ScheduleStorage.saveSchedule(this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
+            //반환값으로 수정한 달의 schedule 다 보냄
             return res;
 
         }catch(err){
@@ -79,6 +80,7 @@ class Schedule{
             //userId="test123";
             console.log(this.req.query.no);
             const res=await ScheduleStorage.removeSchedule(this.req.query.no);
+            //반환값으로 수정한 달의 schedule 다 보냄
             return res;
 
         }catch(err){
@@ -94,6 +96,7 @@ class Schedule{
             console.log(this.req.body.title+", "+this.req.body.content+", "+this.req.body.start_date+", "+this.req.body.end_date);
 
             const res=await ScheduleStorage.modifySchedule(this.req.query.no, this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
+            //반환값으로 수정한 달의 schedule 다 보냄
             return res;
 
         }catch(err){

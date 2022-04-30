@@ -7,24 +7,26 @@ class TodoStorage{
     static getTodo(id, where){
         return new Promise((resolve, reject)=>{
             //console.log(where);
-            const query="SELECT *, DATE_FORMAT(todo_date,'%Y-%m-%d') AS todo_date FROM capstone_design.todo " + where;
+            const query="SELECT *, DATE_FORMAT(todo_date,'%Y-%m-%d') AS todo_date, IF(todo_checked, 'true', 'false') as todo_checked FROM capstone_design.todo " + where;
+            //console.log(query);
             db.query(query, [id] ,(err, data)=>{
+                //console.log(data);
                 if(err) reject(err);
                 else resolve(data);
             });
         });
     }
 
-    static getCheck(index){
+    /*static getCheck(index){
         return new Promise((resolve, reject)=>{
             console.log(index);
-            const query="SELECT * FROM capstone_design.todo WHERE todo_no=?";
+            const query="SELECT *, DATE_FORMAT(todo_date,'%Y-%m-%d') AS todo_date, IF(todo_checked, 'true', 'false') as todo_checked FROM capstone_design.todo WHERE todo_no=?";
             db.query(query, [index] ,(err, data)=>{
                 if(err) reject(err);
                 else resolve(data[0]);
             });
         });
-    }
+    }*/
 
     static saveTodo(id, content, date){
         return new Promise((resolve, reject)=>{
