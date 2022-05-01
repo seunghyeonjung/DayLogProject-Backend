@@ -50,7 +50,7 @@ async function oneDayData(year, month, last_day, id){
             let res=await TodoStorage.getTodo(id, where);
             if(!(res.length==0)){
                 const item={date : res[0].todo_date, todos : res};
-                //console.log(item);
+                console.log(item);
                 month_todos.push(item);
             }
         }
@@ -59,7 +59,7 @@ async function oneDayData(year, month, last_day, id){
             let res=await TodoStorage.getTodo(id, where);
             if(!(res.length==0)){
                 const item={date : res[0].todo_date, todos : res};
-                //console.log(item);
+                console.log(item);
                 month_todos.push(item);
             }
         }
@@ -76,11 +76,14 @@ class Todo{
     async getTodo(){
         try{
             let month_todos=[];
-            let last_day=getDay(this.req.query.year, this.req.query.month);
+            const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
+            let last_day=getDay(this.req.query.year, month);
             
-            console.log(this.req.userId+", "+this.req.query.month);
+            console.log(typeof(month), typeof(this.req.query.year));
+            
+            console.log(this.req.userId+", "+month+", "+this.req.query.year);
 
-            month_todos=oneDayData(this.req.query.year, this.req.query.month, last_day, this.req.userId);
+            month_todos=oneDayData(this.req.query.year, month, last_day, this.req.userId);
             //console.log(month_todos);
             
             return month_todos;

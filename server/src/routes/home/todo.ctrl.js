@@ -9,7 +9,7 @@ const process={
         const todo=new Todo(request);
         const month_todos=await todo.getTodo();
         //console.log(todos);
-        return response.json(todos);
+        return response.json(month_todos);
     },
 
     saveTodo : async function(request, response){
