@@ -11,8 +11,10 @@ const auth={
     check : async function(request, response, next){
         const accessToken=request.headers["authorization"]; //front에서 헤더에 담아준 accesstoken
         //console.log(accessToken);
+        console.log(accessToken.split(" ")[1]);
+        const decoded =verify.verifyToken(accessToken.split(" ")[1]);
 
-        const decoded =verify.verifyToken(accessToken);
+        console.log(decoded);
 
         if (decoded === "jwt_expired") {
             response.status(401).send({
