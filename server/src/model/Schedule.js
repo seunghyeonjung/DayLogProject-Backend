@@ -46,16 +46,44 @@ class Schedule{
         try{
             let where;
             let month_schedules=[];
-            const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
-            let last_day=getDay(this.req.query.year, month);
+            let p_month, p_year, n_month, n_year;
+            let last_day;
+            //const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
+            console.log(this.req.query.year, this.req.query.month);
+
+            if(this.req.query.month==12) {
+                p_month=Number(this.req.query.month-1);
+                p_year=this.req.query.year
+                n_month='01';
+                n_year=Number(this.req.query.year)+1;
+                p_month = p_month < 10 ? '0'+p_month : p_month;
+                last_day=getDay(n_year, String(n_month));
+            }
+            else if(this.req.query.month==1){
+                p_month='12';
+                p_year=Number(this.req.query.year)-1;
+                n_month=Number(this.req.query.month)+1;
+                n_year=this.req.query.year;
+                n_month = n_month < 10 ? '0'+n_month : n_month;
+                last_day=getDay(n_year, String(n_month));
+            }    
+            else{
+                p_month=Number(this.req.query.month-1);
+                p_year=this.req.query.year;
+                n_month=Number(this.req.query.month)+1;
+                n_year=this.req.query.year;
+                p_month = p_month < 10 ? '0'+p_month : p_month;
+                n_month = n_month < 10 ? '0'+n_month : n_month;
+                last_day=getDay(n_year, String(n_month));
+                
+            }
 
             
-            //console.log(year+", "+last_day);
+            console.log(p_month, p_year, n_month, n_year, last_day);
             //console.log(this.req.userId+", "+this.req.query.date);
             //console.log(this.req.userId+", "+this.req.query.month);
             
-  
-            where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+this.req.query.year+"-"+month+"-01' AND '"+this.req.query.year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+            where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+p_year+"-"+p_month+"-01' AND '"+n_year+"-"+n_month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
             month_schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
             
             if(month_schedules.length==0) return {haveSchedules : false}           
@@ -73,15 +101,46 @@ class Schedule{
             //console.log(this.req.body.title+", "+this.req.body.content+", "+this.req.body.start_date+", "+this.req.body.end_date);
             let where;
             let month_schedules=[];
+            let p_month, p_year, n_month, n_year;
+            let last_day;
             const date=this.req.body.start_date;
-            const year=date.substr(0,4);
-            const month=date.substr(5,2);
-            let last_day=getDay(year, month);
+            let year=date.substr(0,4);
+            let month=date.substr(5,2);
+            year=Number(year);
+            month=Number(month);
+
+            if(month==12) {
+                p_month=month-1;
+                p_year=year
+                n_month='01';
+                n_year=year+1;
+                //p_month = p_month < 10 ? '0'+p_month : p_month;
+                last_day=getDay(n_year, String(n_month));
+            }
+            else if(month==1){
+                p_month='12';
+                p_year=year-1;
+                n_month=month+1;
+                n_year=year;
+                //n_month = n_month < 10 ? '0'+n_month : n_month;
+                last_day=getDay(n_year, 0+String(n_month));
+            }    
+            else{
+                p_month=month-1;
+                p_year=year;
+                n_month=month+1;
+                n_year=year;
+               // p_month = p_month < 10 ? '0'+p_month : p_month;
+                //n_month = n_month < 10 ? '0'+n_month : n_month;
+                if(n_month<10) last_day=getDay(n_year, 0+String(n_month));
+                else last_day=getDay(n_year, String(n_month));
+            }
+            console.log(p_month, p_year, n_month, n_year, last_day);
 
             const res=await ScheduleStorage.saveSchedule(this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
             //반환값으로 수정한 달의 schedule 다 보냄
             if(res.success==true){
-                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+p_year+"-"+p_month+"-01' AND '"+n_year+"-"+n_month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
                 month_schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
                 
                 if(month_schedules.length==0) return {haveSchedules : false}           
@@ -100,18 +159,48 @@ class Schedule{
             //userId="test123";
             const index=this.req.query.no;
             let month_schedules=[];
+            let p_month, p_year, n_month, n_year;
+            let last_day;
             let where="WHERE member_id=? AND schedule_no="+index;
             const date=(await ScheduleStorage.getSchedule(this.req.userId, where))[0].start_date;
             console.log(date);
-            const year=date.substr(0,4);
-            const month=date.substr(5,2);
-            
-            let last_day=getDay(year, month);
-    
+            let year=date.substr(0,4);
+            let month=date.substr(5,2);
+            year=Number(year);
+            month=Number(month);
+
+            if(month==12) {
+                p_month=month-1;
+                p_year=year
+                n_month='01';
+                n_year=year+1;
+                //p_month = p_month < 10 ? '0'+p_month : p_month;
+                last_day=getDay(n_year, String(n_month));
+            }
+            else if(month==1){
+                p_month='12';
+                p_year=year-1;
+                n_month=month+1;
+                n_year=year;
+                //n_month = n_month < 10 ? '0'+n_month : n_month;
+                last_day=getDay(n_year, 0+String(n_month));
+            }    
+            else{
+                p_month=month-1;
+                p_year=year;
+                n_month=month+1;
+                n_year=year;
+               // p_month = p_month < 10 ? '0'+p_month : p_month;
+                //n_month = n_month < 10 ? '0'+n_month : n_month;
+                if(n_month<10) last_day=getDay(n_year, 0+String(n_month));
+                else last_day=getDay(n_year, String(n_month));
+            }
+            console.log(p_month, p_year, n_month, n_year, last_day);
+
             const res=await ScheduleStorage.removeSchedule(index);
 
             if(res.success==true){
-                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+p_year+"-"+p_month+"-01' AND '"+n_year+"-"+n_month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
                 month_schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
                 //반환값으로 수정한 달의 schedule 다 보냄
                 if(month_schedules.length==0) return {haveSchedules : false}           
@@ -133,18 +222,48 @@ class Schedule{
 
             const index=this.req.query.no;
             let month_schedules=[];
+            let p_month, p_year, n_month, n_year;
+            let last_day;
             let where="WHERE member_id=? AND schedule_no="+index;
             const date=(await ScheduleStorage.getSchedule(this.req.userId, where))[0].start_date;
             console.log(date);
-            const year=date.substr(0,4);
-            const month=date.substr(5,2);
-            
-            let last_day=getDay(year, month);
+            let year=date.substr(0,4);
+            let month=date.substr(5,2);
+            year=Number(year);
+            month=Number(month);
+
+            if(month==12) {
+                p_month=month-1;
+                p_year=year
+                n_month='01';
+                n_year=year+1;
+                //p_month = p_month < 10 ? '0'+p_month : p_month;
+                last_day=getDay(n_year, String(n_month));
+            }
+            else if(month==1){
+                p_month='12';
+                p_year=year-1;
+                n_month=month+1;
+                n_year=year;
+                //n_month = n_month < 10 ? '0'+n_month : n_month;
+                last_day=getDay(n_year, 0+String(n_month));
+            }    
+            else{
+                p_month=month-1;
+                p_year=year;
+                n_month=month+1;
+                n_year=year;
+               // p_month = p_month < 10 ? '0'+p_month : p_month;
+                //n_month = n_month < 10 ? '0'+n_month : n_month;
+                if(n_month<10) last_day=getDay(n_year, 0+String(n_month));
+                else last_day=getDay(n_year, String(n_month));
+            }
+            console.log(p_month, p_year, n_month, n_year, last_day);
 
             const res=await ScheduleStorage.modifySchedule(index, this.req.userId, this.req.body.title, this.req.body.content, this.req.body.start_date, this.req.body.end_date);
 
             if(res.success==true){
-                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
+                where="WHERE member_id=? AND (DATE(schedule_start_date) BETWEEN '"+p_year+"-"+p_month+"-01' AND '"+n_year+"-"+n_month+"-"+last_day+"') ORDER BY schedule_start_date ASC";
                 month_schedules=await ScheduleStorage.getSchedule(this.req.userId, where);
                 //반환값으로 수정한 달의 schedule 다 보냄
                 if(month_schedules.length==0) return {haveSchedules : false}           
