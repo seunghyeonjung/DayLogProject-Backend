@@ -125,6 +125,7 @@ class Todo{
         try{
             //test 할 때만 userId -> 끝난 후 this.req.userId
             //userId="test123";
+            console.log("remove todo");
             const index=this.req.query.no;
             let where="WHERE member_id=? AND todo_no="+index;
             const result=await TodoStorage.getTodo(this.req.userId, where);

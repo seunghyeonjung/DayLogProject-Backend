@@ -7,7 +7,7 @@ class ScheduleStorage{
     static getSchedule(id, where){
         return new Promise((resolve, reject)=>{
             console.log(where);
-            const query="SELECT *, DATE_FORMAT(schedule_start_date,'%Y-%m-%d') AS schedule_start_date, DATE_FORMAT(schedule_end_date,'%Y-%m-%d') AS schedule_end_date FROM capstone_design.schedule " + where;
+            const query="SELECT schedule_no, schedule_title as title, schedule_content as content, schedule_start_date as start_date, schedule_end_date as end_date, DATE_FORMAT(schedule_start_date,'%Y-%m-%d') AS start_date, DATE_FORMAT(schedule_end_date,'%Y-%m-%d') AS end_date FROM capstone_design.schedule " + where;
             db.query(query, [id] ,(err, data)=>{
                 if(err) reject(err);
                 else resolve(data);
