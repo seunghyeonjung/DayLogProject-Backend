@@ -3,8 +3,9 @@
 //jwt=header의 인코딩 값과 payload의 인코딩 값을 합친 해시값
 
 const TodoStorage=require("./TodoStorage");
-const jwt=require('jsonwebtoken');
-const secret=process.env.JWT_SECRET_KEY;
+//const jwt=require('jsonwebtoken');
+//const secret=process.env.JWT_SECRET_KEY;
+
 
 function getDay(year,month){
     let last_day;
