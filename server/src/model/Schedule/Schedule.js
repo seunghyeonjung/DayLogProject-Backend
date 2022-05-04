@@ -46,6 +46,8 @@ class Schedule{
             let where;
             let month_schedules=[];
 
+            //console.log(this.req.query);
+
             const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
             const date=moment(this.req.query.year+"-"+month);
             const previous=(date.clone().subtract(1, "months")).format("YYYY-MM");

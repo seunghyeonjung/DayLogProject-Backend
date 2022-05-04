@@ -6,11 +6,13 @@
 const express=require("express");
 const router=express.Router();
 
-const checkToken=require("../middlewares/authorization");
 
+
+const checkToken=require("../middlewares/authorization");
 const user_ctrl=require("./user.ctrl");
 const todo_ctrl=require("./todo.ctrl");
 const schedule_ctrl=require("./schedule.ctrl");
+const diary_ctrl=require("./diary.ctrl");
 
 
 //router.get("/", user_ctrl.output.hello);
@@ -40,5 +42,14 @@ router.get("/schedule/calendar", checkToken.auth.check, schedule_ctrl.process.ge
 router.put("/schedule", checkToken.auth.check, schedule_ctrl.process.modifySchedule);
 router.post("/schedule", checkToken.auth.check, schedule_ctrl.process.saveSchedule);
 router.delete("/schedule",checkToken.auth.check, schedule_ctrl.process.removeSchedule);
+
+//일기 관련
+router.get("/diary", checkToken.auth.check, diary_ctrl.process.getDiary);
+router.get("/diary/calendar", checkToken.auth.check, diary_ctrl.process.getDiary);
+router.get("/diary/share", checkToken.auth.check, diary_ctrl.process.modifyShare);
+router.put("/diary", checkToken.auth.check, diary_ctrl.process.modifyDiary);
+router.post("/diary", checkToken.auth.check, diary_ctrl.process.saveDiary);
+router.delete("/diary",checkToken.auth.check, diary_ctrl.process.removeDiary);
+
 
 module.exports=router;
