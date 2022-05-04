@@ -1,7 +1,7 @@
 "use strict";
 
 const { json } = require("body-parser");
-const Todo = require("../../model/Todo");
+const Todo = require("../../model/Todo/Todo");
 
 //body로 데이터를 전달하면 request.body로 접근해야함
 const process={

@@ -5,7 +5,7 @@
     -fulfilled=비동기 처리가 완료되어 프로미스가 결과 값을 반환해준 상태 =>new Promise(function(resolve, reject){ resolve(); }); 수행 시 이행 상태, getData().then(function(resolvedData){ }); 처리 결과 값 받음
     -rejected=비동기 처리가 실패하거나 오류가 발생한 상태 => new Promise(function(resolve, reject){ reject(); }); 수행 시 실패 상태, getData().then().catch(function(err){ console.log(err) }); 결과 err 받음*/
 
-const db=require("../config/db");
+const db=require("../../config/db");
 
 
 class UserStorage{

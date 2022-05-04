@@ -1,7 +1,7 @@
 "use strict";
 
 const { json } = require("body-parser");
-const Schedule = require("../../model/Schedule");
+const Schedule = require("../../model/Schedule/Schedule");
 
 //body로 데이터를 전달하면 request.body로 접근해야함
 const process={

@@ -5,7 +5,7 @@ const { json } = require("body-parser");
 const jwt=require('jsonwebtoken');
 const secret=process.env.JWT_SECRET_KEY;
 const verify=require('./verify');
-const UserStorage=require("../../model/UserStorage");
+const UserStorage=require("../../model/User/UserStorage");
 
 const auth={
     check : async function(request, response, next){

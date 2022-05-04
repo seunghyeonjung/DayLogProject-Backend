@@ -5,7 +5,7 @@
 
 
 const { json } = require("body-parser");
-const User = require("../../model/User");
+const User = require("../../model/User/User");
 
 //body로 데이터를 전달하면 request.body로 접근해야함
 const process={
