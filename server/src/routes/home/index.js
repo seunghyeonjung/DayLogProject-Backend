@@ -52,4 +52,9 @@ router.post("/diary", checkToken.auth.check, diary_ctrl.process.saveDiary);
 router.delete("/diary",checkToken.auth.check, diary_ctrl.process.removeDiary);
 
 
+//생리 관련
+router.post("/members/cycle/new", checkToken.auth.check, menstruation_ctrl.process.saveMenstruation);
+router.post("/members/cycle", checkToken.auth.check, menstruation_ctrl.process.getMenstruation);
+
+
 module.exports=router;
