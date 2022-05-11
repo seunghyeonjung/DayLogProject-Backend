@@ -23,7 +23,7 @@ function duedate(start, cycle){
     //console.log("예정일은" + duedate.format("YYYY-MM-DD"));
     let due = startdate.format("YYYY-MM-DD");
     let due_list=[];
-    for(var i = 1 ; i < 13 ; i ++){
+    for(var i = 1 ; i < 6 ; i ++){
         due = moment(startdate.format("YYYY-MM-DD")).add(cycle[0].cycle*(i), "days"); // 시작일 + 주기*n
         //console.log(item.format("YYYY-MM-DD"));
         
@@ -35,42 +35,103 @@ function duedate(start, cycle){
     return due_list;
 };
 
+
 function list(cycle, dates_start, dates_due){
+    console.log("잘 왔는지 확인 ", dates_start, dates_due);
+
+    let due = [] ;
+    due.push(dates_due);
 
     let dates = []; //시작 예정 합치기
 
+    //시작일이 리스트에 존재할경우
     for(let i = 0 ; i < dates_start.length ; i++){
-        console.log(i);
-        let s = {type : dates_start[i].type , date : dates_start[i].date};
+        const s = {type : dates_start[i].type , date : dates_start[i].date};
         dates.push(s);
 
         if(i === dates_start.length-1){
-            console.log("진입");
-            dates.push(dates_due);
+
+            if(dates_due.length > 0){
+                for(let j = 0 ; j < dates_due.length ; j++){
+                    const d = {type : dates_due[j].type , date : dates_due[j].date};
+                    dates.push(d);
+                }
+            }
+            else{
+                dates.push(dates_due);
+            }
+            
+        }
+    }
+
+    //시작일이 존재하지 않을경우 예정일만 담기
+    if(dates_start.length === 0){
+        for(let j = 0 ; j < dates_due.length ; j++){
+            const d = {type : dates_due[j].type , date : dates_due[j].date};
+            dates.push(d);
         }
     }
 
     console.log("확인2", dates);
-
-    /*
+    
     const cy = {cycle : cycle[0].cycle};
     const da = {dates : dates};
     const res1 = Object.assign(cy, da);
-    let res = [];
-    res.push(res1);
-    console.log("res : ", res);
-    */
-
-    const cy = {cycle : cycle[0].cycle};
-    const da = {dates : dates};
-    const res1 = Object.assign(cy, da);
-    const res = { cycle_data : res1};
+    const res = { cycle_data : res1}; //전부 객체로 보내기
     //let res = [];
     console.log("res : ", res);
 
     return res;
 };
 
+
+function getlist(cycle, dates_start, dates_due){
+    console.log("잘 왔는지 확인 ", dates_start, dates_due);
+
+    let due = [] ;
+    due.push(dates_due);
+
+    let dates = []; //시작 예정 합치기
+
+    //시작일이 리스트에 존재할경우
+    for(let i = 0 ; i < dates_start.length ; i++){
+        const s = {type : dates_start[i].type , date : dates_start[i].date};
+        dates.push(s);
+
+        if(i === dates_start.length-1){
+
+            if(dates_due.length > 0){
+                for(let j = 0 ; j < dates_due.length ; j++){
+                    const d = {type : dates_due[j].type , date : dates_due[j].date};
+                    dates.push(d);
+                }
+            }
+            else{
+                dates.push(dates_due);
+            }
+            
+        }
+    }
+
+    //시작일이 존재하지 않을경우 예정일만 담기
+    if(dates_start.length === 0){
+        for(let j = 0 ; j < dates_due.length ; j++){
+            const d = {type : dates_due[j].type , date : dates_due[j].date};
+            dates.push(d);
+        }
+    }
+
+    console.log("확인2", dates);
+
+    const cy = {cycle : cycle[0].cycle};
+    const da = {dates : dates};
+    const res1 = Object.assign(cy, da);
+    const res = { message : "FILL" , cycle_data : res1}; //전부 객체로 보내기
+    //let res = [];
+    console.log("res : ", res);
+
+    return res;
+};
 
 
 class Menstruation{
@@ -86,6 +147,7 @@ class Menstruation{
             const m = (now.getMonth()+1); //getMonth()로 월을 구하면 원래 월의 -1 된 값이 나옵니다. 
             //console.log(m);
             const y = now.getFullYear();
+            console.log("주기 뭐가 왓나",this.body.body.cycle);
 
 
             const all_start = await MenstruationStorage.getAllStart(this.body.userId); // 시작일 모두 가져와서 이전달로 예정일 구해서 현재달꺼만 빼기
@@ -96,9 +158,9 @@ class Menstruation{
                         console.log("중복");
                         
                         return {success : false , message : "동일한 시작일이 존재합니다."}
+                    }
                 }
             }
-        }
             const insert1 = await MenstruationStorage.saveStart(this.body.userId, this.body.body.start); //시작일 저장
             const insert2 = await MenstruationStorage.saveCycle(this.body.userId, this.body.body.cycle); //주기 저장
 
@@ -107,8 +169,6 @@ class Menstruation{
             const cycle = await MenstruationStorage.getCycle(this.body.userId); //주기 보내기
             
             // 1. 처음 입력일 경우
-
-            console.log("길이",all_start.length);
             if(all_start.length===0){ 
 
                 console.log("첫입력");
@@ -124,23 +184,29 @@ class Menstruation{
                     due2.push(due[1]);
 
                     const res = new list(cycle, new_start, due2);
-                    return res;
+                    const month_cycle = {res : res};
+                    return month_cycle
                 }
 
                 else {
                     const res = new list(cycle, new_start, due[0]);
-                    return res;}
+                    const month_cycle = {res : res};
+                    return month_cycle
+                }
             }
-
+            // 2. 처음 입력이 아닐 경우
             else if(all_start.length>0){
+                const all_start = await MenstruationStorage.getAllStart(this.body.userId); // 시작일 모두 가져와서 이전달로 예정일 구해서 현재달꺼만 빼기
                 // 이전달의 시작일(있다면) + 현재달의 시작일 + 예정일
-                console.log("첫입력x");
+                console.log("첫입력x 이전달에 시작일 o");
                 let start_list = [];
                 let due_list = [];
 
+                //예정일
                 const due = new duedate(new_start, cycle);
                 let a = moment(due[0].date);
                 let b = moment(new_start[0].date);
+
                 if(a.month() === b.month()){
                     //주기가 짧아서 같은 달일 경우 예정일을 2개 보내줘야함
                     due_list.push(due[0]);
@@ -150,21 +216,21 @@ class Menstruation{
                     due_list.push(due[0]);
                 }
 
+                // 이전달 시작일 있는지 파악 + 같은달일수도있음 // 문제가 시작일은 현재만 입력하니까... 과거는 생각 안함...
                 for(let i = 0 ; i < all_start.length ; i++){
-                    let c = moment(all_start[i].date)+1; //시작일 달
-                    if((c+1)===m){ // 현재달보다 이전 달이라면
+                    let c = moment(all_start[i].date); //시작일 달
+
+                    if((c.month()+2===m) || (c.month()+1 ===m)){ 
+
+                        // 현재달보다 이전 달이라면 현재달 5월이면 m=5 c가 이전달이면 4월이여야하는데 3으로 나옴 그래서 +2
                         let s = { type : all_start[i].type, date : all_start[i].date};
                         start_list.push(s);
-                        break;
                     }
-                    start_list.push(all_start[i]); //최신순으로 넣이 아마도 현재달부터 넣어짐
+                   
                 }
-
-                let s2 = { type : new_start[i].type, date : new_start[i].date};
-                start_list.unshift(s);
-
                 const res = new list(cycle, start_list, due_list);
-                return res;
+                const month_cycle = {res : res};
+                return month_cycle
 
             }
             
@@ -175,9 +241,72 @@ class Menstruation{
 
     // 예정일 출력, 시작일 출력
     async getMenstruation(){
+        
         try{
 
+            const all_start = await MenstruationStorage.getAllStart(this.body.userId); // 시작일 모두 가져와서 이전달로 예정일 구해서 현재달꺼만 빼기
+            const new_start = await MenstruationStorage.getStart(this.body.userId);// 최신 아마도 현재달 시작일 구해짐
+            const cycle = await MenstruationStorage.getCycle(this.body.userId); //주기 보내기
 
+            console.log("주기확인",cycle);
+
+            // 요청받은 년도와 달을이용하기
+            const m = this.body.query.month;
+            console.log("요청받은 달", this.body.query.month);
+            const y = this.body.query.year;
+            console.log("요청받은 년", this.body.query.year);
+
+            //3달치보내줘야함
+/*
+            if(cycle === NULL){
+                //주기없음
+                const month_cycle = {message: "EMPTY"};
+                return month_cycle;
+            }
+*/
+            console.log("-----");
+
+            //1 이번달
+            let start_list = [];
+            let due_list = [];
+            console.log("시작일");
+            if(all_start.length>0){
+                for(let i = 0 ; i < all_start.length ; i++){
+                    let c = moment(all_start[i].date); //시작일 달
+                    console.log("시작일",all_start[i]);
+                    console.log(c.month(), m);
+                    if((c.month()+1)===Number(m) || (c.month()+2)===Number(m) || (c.month()===Number(m))){ //이전달 현재달 
+                       
+                        let s = { type : all_start[i].type, date : all_start[i].date};
+                        
+                        start_list.push(s);
+                    }
+                }
+                
+                console.log(start_list);
+
+                const due = new duedate(new_start, cycle);
+                for(let i = 0 ; i < due.length ; i++){
+                    let d = moment(due[i].date); //시작일 달
+
+
+                    if((d.month()+1)===Number(m) || (d.month()+2)===Number(m)|| (d.month())===Number(m)){ //이전달 현재달 
+                        
+                        let s = { type : due[i].type, date : due[i].date};
+                        due_list.push(s);
+                    }
+                }
+
+                const res = new getlist(cycle, start_list, due_list);
+                //const month_cycle = {res : res};
+                return res;
+                
+            }
+            
+
+
+
+/*
             const all_start = await MenstruationStorage.getAllStart(this.body.userId); // 시작일 모두 가져와서 이전달로 예정일 구해서 현재달꺼만 빼기
             const new_start = await MenstruationStorage.getStart(this.body.userId);// 최신 아마도 현재달 시작일 구해짐
             const cycle = await MenstruationStorage.getCycle(this.body.userId); //주기 보내기
@@ -326,24 +455,7 @@ class Menstruation{
                 }
             }
             
-           
-
-
-
-
-            /*
-            // 최신...현재의 달? 요청되는 달을 기준으로 이전달 이후 달..?
-            console.log(start[0].cycle_start_date); // 배열로 오니까 [0](첫번째).데이터명
-            //let s = start[0].cycle_start_date+30 => 문자열로 인식되어서 뒤에 30이 붙음 <- 해결
-
-            let startdate = moment(start[0].cycle_start_date);
-            console.log(cycle[0].menstruation_cycle); //이건 오는거 확인.... 주기 가져오는건 수정x
-            console.log("시작일은" + startdate.format("YYYY-MM-DD"));
-            //예정일 계산 -> for문으로 배열에 예정일 12개 저장
-            let duedate = moment(startdate.format("YYYY-MM-DD")).add(cycle[0].menstruation_cycle, "days");
-            console.log("예정일은" + duedate.format("YYYY-MM-DD"));
-            */
-            
+           */
 
         
         }catch(err){

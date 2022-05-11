@@ -14,6 +14,8 @@ const todo_ctrl=require("./todo.ctrl");
 const schedule_ctrl=require("./schedule.ctrl");
 const diary_ctrl=require("./diary.ctrl");
 
+const menstruation_ctrl=require("./menstruation.ctrl");
+
 
 //router.get("/", user_ctrl.output.hello);
 //router.get("/login", user_ctrl.output.login);

@@ -26,7 +26,7 @@ const process={
     getMenstruation : async function(request,response){
         const menstruation=new Menstruation(request);
         const month_cycles=await menstruation.getMenstruation();
-        console.log("확인");
+        console.log("조회확인");
         console.log(month_cycles);
         return response.json(month_cycles)
     }
