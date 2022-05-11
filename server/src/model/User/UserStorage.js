@@ -11,7 +11,7 @@ const db=require("../../config/db");
 class UserStorage{
     static getUserInfo(id){
         return new Promise((resolve, reject)=>{
-            const query="SELECT * FROM asas.member WHERE member_id=?";
+            const query="SELECT * FROM capstone_design.member WHERE member_id=?";
             db.query(query, [id] ,(err, data)=>{
                 if(err) {
                     console.log(err.message);
