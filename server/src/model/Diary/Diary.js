@@ -48,7 +48,8 @@ class Diary{
             const year=this.req.query.year;
             const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
             const last_day=getDay(year,month);
-            let diary_month=[];
+            let month_diary=[];
+            let current_diary=[];
             console.log(Object.keys(this.req.query));
             if(Object.keys(this.req.query)=="no"){
                 where="WHERE member_id=? AND diary_no="+this.req.query.no;
@@ -57,10 +58,17 @@ class Diary{
             }
             else{
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                diary_month=await DiaryStorage.getDiary(this.req.userId, where);
+                month_diary=await DiaryStorage.getDiary(this.req.userId, where);
 
-                if(diary_month.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", diary_month};
+                //console.log("diary : ",month_diary);
+
+                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
+                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
+
+                //console.log("current diary : ",current_diary);
+
+                if(month_diary.length==0) return {message : "EMPTY"}           
+                else return {message : "FILL", month_diary, current_diary};
 
             }
 
@@ -73,7 +81,8 @@ class Diary{
         try{
             let where;
             let image;
-            let diary_month=[];
+            let month_diary=[];
+            let current_diary=[];
             const year=(this.req.body.date).substring(0,4);
             const month=(this.req.body.date).substring(5,7);
             const last_day=getDay(year, month)
@@ -90,10 +99,12 @@ class Diary{
             
             if(res.success==true){
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                diary_month=await DiaryStorage.getDiary(this.req.userId, where);
+                month_diary=await DiaryStorage.getDiary(this.req.userId, where);
+
+                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
+                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
                 
-                if(diary_month.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", diary_month};
+                return {month_diary, current_diary};
             }
             return res;
 
@@ -105,7 +116,8 @@ class Diary{
     async removeDiary(){
         try{
             const index=this.req.query.no;
-            let diary_month=[];
+            let month_diary=[];
+            let current_diary=[];
             let where="WHERE member_id=? AND diary_no="+index;
             const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
             const year=date.substring(0,4);
@@ -118,10 +130,13 @@ class Diary{
 
             if(res.success==true){
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                diary_month=await await DiaryStorage.getDiary(this.req.userId, where);
+                month_diary=await await DiaryStorage.getDiary(this.req.userId, where);
+
+                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
+                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
                 
-                if(diary_month.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", diary_month};
+                if(month_diary.length==0) return {message : "EMPTY"}           
+                else return {message : "FILL", month_diary, current_diary};
             }
             return res;
 
@@ -133,7 +148,8 @@ class Diary{
     async modifyDiary(){
         try{
             const index=this.req.query.no;
-            let diary_month=[];
+            let month_diary=[];
+            let current_diary=[];
             let where="WHERE member_id=? AND diary_no="+index;
             const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
             const year=date.substring(0,4);
@@ -144,10 +160,13 @@ class Diary{
 
             if(res.success==true){
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                diary_month=await await DiaryStorage.getDiary(this.req.userId, where);
+                month_diary=await await DiaryStorage.getDiary(this.req.userId, where);
+
+                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
+                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
                 
-                if(diary_month.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", diary_month};
+                if(month_diary.length==0) return {message : "EMPTY"}           
+                else return {message : "FILL", month_diary, current_diary};
             }
             return res;
 
@@ -161,7 +180,8 @@ class Diary{
             const index=this.req.query.no;
             let change;
             let res;
-            let diary_month=[];
+            let month_diary=[];
+            let current_diary=[];
             let where="WHERE member_id=? AND diary_no="+index;
             const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
             const share=(await DiaryStorage.getDiary(this.req.userId, where))[0].share;
@@ -180,10 +200,13 @@ class Diary{
 
             if(res.success==true){
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                diary_month=await await DiaryStorage.getDiary(this.req.userId, where);
+                month_diary=await await DiaryStorage.getDiary(this.req.userId, where);
+
+                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
+                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
                 
-                if(diary_month.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", diary_month};
+                if(month_diary.length==0) return {message : "EMPTY"}           
+                else return {message : "FILL", month_diary, current_diary};
             }
             return res;
 
