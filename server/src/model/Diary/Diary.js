@@ -89,7 +89,7 @@ class Diary{
 
             console.log(year, month, last_day);
 
-            
+
             if(this.req.body.image) image=this.req.body.image;
             else image=null;
 
