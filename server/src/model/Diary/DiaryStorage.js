@@ -6,7 +6,7 @@ const db=require("../../config/db");
 class DiaryStorage{
     static getDiary(id, where){
         return new Promise((resolve, reject)=>{
-            const query="SELECT member_id, diary_no, diary_content as content, diary_date as date, diary_image as image, emotion, share_y_n as share, DATE_FORMAT(diary_date,'%Y-%m-%d') AS date, IF(share_y_n, 'true', 'false') as share FROM capstone_design.diary " + where;
+            const query="SELECT member_id, diary_no, diary_content as content, diary_date as date, diary_image as image, emotion, share_y_n as shared, DATE_FORMAT(diary_date,'%Y-%m-%d') AS date, IF(share_y_n, 'true', 'false') as shared FROM capstone_design.diary " + where;
             //console.log(query);
             db.query(query, [id] ,(err, data)=>{
                 if(err) reject(err);
