@@ -6,6 +6,47 @@
 const express=require("express");
 const router=express.Router();
 
+const sharp=require("sharp");
+const fs=require("fs");
+const multer=require('multer');
+const storage=multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, './src/databases/images')
+    },
+    filename: function(req, file, cb){
+        console.log(file.originalname);
+        cb(null, Date.now()+'_'+file.originalname);
+    }
+});
+
+const _storage=multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, './src/databases/profiles')
+    },
+    filename: function(req, file, cb){
+        cb(null, file.filename+'-'+Date.now())
+    }
+});
+
+const fileFilter=(req, file, cb)=>{
+    const typeArray=file.mimetype.split('/');
+    const fileType=typeArray[1];
+
+    if(fileType=='jpg' || fileType=='png' || fileType=='jpeg'){
+        console.log("ok");
+        req.fileValidationError=null;
+        cb(null, true);
+    }
+    else{
+        console.log("no");
+        req.fileValidationError=".jpg, .png, .jpeg 파일만 업로드 가능합니다.";
+        cb(null, false);
+    }
+}
+
+const diary_upload=multer({storage:storage, fileFilter:fileFilter}).single('image');
+const profile_upload=multer({storage:_storage, fileFilter:fileFilter});
+let image;
 
 
 const checkToken=require("../middlewares/authorization");
@@ -52,6 +93,43 @@ router.get("/diary/share", checkToken.auth.check, diary_ctrl.process.modifyShare
 router.put("/diary", checkToken.auth.check, diary_ctrl.process.modifyDiary);
 router.post("/diary", checkToken.auth.check, diary_ctrl.process.saveDiary);
 router.delete("/diary",checkToken.auth.check, diary_ctrl.process.removeDiary);
+router.post("/diary/image",checkToken.auth.check, function(req, res, next){
+    diary_upload(req, res, function(err){
+        console.log(req.file);
+        console.log(req.file.path);
+        if(req.fileValidationError!=null){
+            console.log(req.fileValidationError);
+            return res.status(400).send(req.fileValidationError);
+        }
+        if(err) {
+            console.log(err);
+            return res.status(400).send({message : err});
+        }
+        else{
+            console.log("ok", req.file.filename, req.file.path);
+            image=req.file.filename;
+            next();
+        }
+    })
+}, function(req, res, next){
+    try{
+        sharp(req.file.path)
+        .resize({width:360, height:240, fit:'fill'})
+        .withMetadata()
+        .toBuffer((err, buffer)=>{
+            if(err) throw err;
+            fs.writeFile(req.file.path, buffer, (err)=>{
+                if(err) throw err;
+                console.log(req.file);
+                console.log(req.file.path);
+            })
+        })
+        next();
+    }
+    catch(err){
+        console.log(err);
+    }
+},diary_ctrl.process.saveImage);
 
 
 //생리 관련

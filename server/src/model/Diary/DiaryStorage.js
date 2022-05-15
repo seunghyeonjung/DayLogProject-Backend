@@ -15,10 +15,21 @@ class DiaryStorage{
         });
     }
 
-    static saveDiary(id, content, date, image, emotion, share){
+    static saveDiary(id, content, date, emotion, share, image){
         return new Promise((resolve, reject)=>{
-            const query="INSERT INTO capstone_design.diary(member_id, diary_content, diary_date, diary_image, emotion, share_y_n) VALUES(?, ?, ?, ?, ?, ?)";
-            db.query(query, [id, content, date, image, emotion, share] ,(err, data)=>{
+            const query="INSERT INTO capstone_design.diary(member_id, diary_content, diary_date, emotion, share_y_n, diary_image) VALUES(?, ?, ?, ?, ?, ?)";
+            db.query(query, [id, content, date, emotion, share, image] ,(err, data)=>{
+                if(err) reject(err);
+                else resolve({success : true});
+            });
+        });
+    }
+
+    static saveImage(id, image, no){
+        return new Promise((resolve, reject)=>{
+            //const query1="SELECT diary_no FROM capstone_design.diary  where member_id=?"
+            const query="UPDATE capstone_design.diary SET diary_image=? WHERE member_id=? and diary_no=?";
+            db.query(query, [image, id, no] ,(err, data)=>{
                 if(err) reject(err);
                 else resolve({success : true});
             });
