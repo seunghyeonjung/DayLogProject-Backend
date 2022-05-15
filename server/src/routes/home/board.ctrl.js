@@ -1,14 +1,21 @@
 "use strict";
 
 const { json } = require("body-parser");
-const Diary = require("../../model/Diary/Diary");
+const Board = require("../../model/Board/Board");
 
 const process={
-    getDiary : async function(request, response){
-        const diary=new Diary(request);
-        const month_diaries=await diary.getDiary();
+    getBoardLastest : async function(request, response){
+        const board=new Board(request);
+        const latest_diary=await board.getBoardLatest();
         //console.log(month_diaries);
-        return response.json(month_diaries);
+        return response.json({latest_diary});
+    },
+
+    getBoardHeart : async function(request, response){
+        const board=new Board(request);
+        const heartest_diary=await board.getBoardHeart();
+        //console.log(month_diaries);
+        return response.json({heartest_diary});
     },
 
     saveDiary : async function(request, response){
@@ -44,7 +51,7 @@ const process={
     modifyShare : async function(request, response){
         const diary=new Diary(request);
         const month_diaries=await diary.modifyShare();
-        //console.log(month_diaries);
+        console.log(month_diaries);
         return response.json(month_diaries);
     },
 

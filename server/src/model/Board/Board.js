@@ -1,7 +1,6 @@
 "use strict"
 
-const DiaryStorage=require("./DiaryStorage");
-const BoardStorage=require("../Board/BoardStorage");
+const BoardStorage=require("./BoardStorage");
 //const moment=require('moment');
 //const { KEYBCS2_BIN } = require("mysql/lib/protocol/constants/charsets");
 
@@ -38,26 +37,26 @@ function getDay(year,month){
     return last_day;
 };
 
-class Diary{
+class Board{
     constructor(req){
         this.req=req;
     }
 
-    async getDiary(){
+    async getBoardLatest(){
         try{
             let where;
-            const year=this.req.query.year;
-            const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
-            const last_day=getDay(year,month);
-            let month_diary=[];
-            let current_diary=[];
-            console.log(Object.keys(this.req.query));
-            if(Object.keys(this.req.query)=="no"){
-                where="WHERE member_id=? AND diary_no="+this.req.query.no;
-                const res=await DiaryStorage.getDiary(this.req.userId, where);
-                return res[0];
-            }
-            else{
+            //const year=this.req.query.year;
+            //const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
+            //const last_day=getDay(year,month);
+            //let month_diary=[];
+            //let current_diary=[];
+           
+            where="ORDER BY board_post_date DESC";
+            const latest_diary=await BoardStorage.getBoard(where);
+            console.log(latest_diary);
+            return latest_diary;
+            
+            /*else{
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
                 month_diary=await DiaryStorage.getDiary(this.req.userId, where);
 
@@ -71,12 +70,47 @@ class Diary{
                 if(month_diary.length==0) return {message : "EMPTY"}           
                 else return {message : "FILL", month_diary, current_diary};
 
-            }
+            }*/
 
         }catch(err){
             return { success : false, message : err}
         }
     }
+
+    async getBoardHeart(){
+        try{
+            let where;
+            //const year=this.req.query.year;
+            //const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
+            //const last_day=getDay(year,month);
+            //let month_diary=[];
+            //let current_diary=[];
+           
+            where="ORDER BY board_like_count DESC";
+            const heartest_diary=await BoardStorage.getBoard(where);
+            return heartest_diary;
+            
+            /*else{
+                where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
+                month_diary=await DiaryStorage.getDiary(this.req.userId, where);
+
+                //console.log("diary : ",month_diary);
+
+                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
+                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
+
+                //console.log("current diary : ",current_diary);
+
+                if(month_diary.length==0) return {message : "EMPTY"}           
+                else return {message : "FILL", month_diary, current_diary};
+
+            }*/
+
+        }catch(err){
+            return { success : false, message : err}
+        }
+    }
+
 
     async saveDiary(){
         try{
@@ -89,21 +123,19 @@ class Diary{
             const last_day=getDay(year, month)
 
             console.log(year, month, last_day);
+
+
+            
+
             console.log("Diary : "+this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share, image);
 
             const res=await DiaryStorage.saveDiary(this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share, image);
 
-            where="WHERE member_id=? ORDER BY diary_no DESC limit 0,1";
-            const result=await DiaryStorage.getDiary(this.req.userId, where);
-            const no=result[0].diary_no;
-            console.log(result, no);
+            if(this.req.body.share===true){
+                
+            }
             
             if(res.success==true){
-                if(this.req.body.share===true){
-                    console.log("추가");
-                    await BoardStorage.saveBoard(this.req.userId, no, this.req.body.content, this.req.body.date, image);
-                }
-
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
                 month_diary=await DiaryStorage.getDiary(this.req.userId, where);
 
@@ -204,13 +236,14 @@ class Diary{
             let month_diary=[];
             let current_diary=[];
             let where="WHERE member_id=? AND diary_no="+index;
-            let date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
-            let shared=(await DiaryStorage.getDiary(this.req.userId, where))[0].shared;
+            const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
+            const shared=(await DiaryStorage.getDiary(this.req.userId, where))[0].shared;
             const year=date.substring(0,4);
             const month=date.substring(5,7);
             const last_day=getDay(year, month);
             console.log(shared);
             if(shared==="false"){
+                
                 change=1;
                 res=await DiaryStorage.modifyShare(change, index);
             }
@@ -220,21 +253,6 @@ class Diary{
             }
 
             if(res.success==true){
-                shared=(await DiaryStorage.getDiary(this.req.userId, where))[0].shared;
-                const content=(await DiaryStorage.getDiary(this.req.userId, where))[0].content;
-                const image=(await DiaryStorage.getDiary(this.req.userId, where))[0].image;
-                console.log(shared, content, image);
-
-                if(shared=='true'){
-                    console.log("공유 변경으로 인한 추가")
-                    await BoardStorage.saveBoard(this.req.userId, index, content, date, image);
-                }
-
-                else if(shared=='false'){
-                    console.log("공유 변경으로 인한 삭제")
-                    await BoardStorage.removeBoard(index);
-                }
-
                 where="WHERE member_id=? AND diary_no="+this.req.query.no;
                 selected_diary=month_diary=await DiaryStorage.getDiary(this.req.userId, where);
 
@@ -256,4 +274,4 @@ class Diary{
 
 }
 
-module.exports=Diary;
+module.exports=Board;
