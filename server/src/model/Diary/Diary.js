@@ -54,7 +54,7 @@ class Diary{
             if(Object.keys(this.req.query)=="no"){
                 where="WHERE member_id=? AND diary_no="+this.req.query.no;
                 const res=await DiaryStorage.getDiary(this.req.userId, where);
-                return res;
+                return res[0];
             }
             else{
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
@@ -80,7 +80,7 @@ class Diary{
     async saveDiary(){
         try{
             let where;
-            let image;
+            let image=null;
             let month_diary=[];
             let current_diary=[];
             const year=(this.req.body.date).substring(0,4);
@@ -90,12 +90,11 @@ class Diary{
             console.log(year, month, last_day);
 
 
-            if(this.req.body.image) image=this.req.body.image;
-            else image=null;
+            
 
-            console.log("Diary : "+this.req.userId, this.req.body.content, this.req.body.date, image, this.req.body.emotion, this.req.body.share)
+            console.log("Diary : "+this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share, image);
 
-            const res=await DiaryStorage.saveDiary(this.req.userId, this.req.body.content, this.req.body.date, image, this.req.body.emotion, this.req.body.share);
+            const res=await DiaryStorage.saveDiary(this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share, image);
             
             if(res.success==true){
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
@@ -106,6 +105,23 @@ class Diary{
                 
                 return {month_diary, current_diary};
             }
+            return res;
+
+        }catch(err){
+            return { success : false, message : err}
+        }
+    }
+
+    async saveImage(){
+        try{
+            console.log(this.req.file);
+            console.log(this.req.file.path);
+            let where="WHERE member_id=? ORDER BY diary_no DESC limit 0,1";
+            
+            const no=(await DiaryStorage.getDiary(this.req.userId, where))[0].diary_no;
+            console.log(no);
+            const res=await DiaryStorage.saveImage(this.req.userId, this.req.file.path, no);
+            console.log(res);
             return res;
 
         }catch(err){
@@ -180,16 +196,18 @@ class Diary{
             const index=this.req.query.no;
             let change;
             let res;
+            let selected_diary=[];
             let month_diary=[];
             let current_diary=[];
             let where="WHERE member_id=? AND diary_no="+index;
             const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
-            const share=(await DiaryStorage.getDiary(this.req.userId, where))[0].share;
+            const shared=(await DiaryStorage.getDiary(this.req.userId, where))[0].shared;
             const year=date.substring(0,4);
             const month=date.substring(5,7);
             const last_day=getDay(year, month);
-
-            if(share==="false"){
+            console.log(shared);
+            if(shared==="false"){
+                
                 change=1;
                 res=await DiaryStorage.modifyShare(change, index);
             }
@@ -199,14 +217,17 @@ class Diary{
             }
 
             if(res.success==true){
+                where="WHERE member_id=? AND diary_no="+this.req.query.no;
+                selected_diary=month_diary=await DiaryStorage.getDiary(this.req.userId, where);
+
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                month_diary=await await DiaryStorage.getDiary(this.req.userId, where);
+                month_diary=await DiaryStorage.getDiary(this.req.userId, where);
 
                 where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
                 current_diary=await DiaryStorage.getDiary(this.req.userId, where);
                 
                 if(month_diary.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", month_diary, current_diary};
+                else return {message : "FILL", selected_diary, month_diary, current_diary};
             }
             return res;
 
