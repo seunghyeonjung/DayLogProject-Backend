@@ -56,7 +56,7 @@ const schedule_ctrl=require("./schedule.ctrl");
 const diary_ctrl=require("./diary.ctrl");
 
 const menstruation_ctrl=require("./menstruation.ctrl");
-
+const board_ctrl=require("./board.ctrl");
 
 //router.get("/", user_ctrl.output.hello);
 //router.get("/login", user_ctrl.output.login);
@@ -133,6 +133,11 @@ router.post("/diary/image",checkToken.auth.check, function(req, res, next){
 //생리 관련
 router.post("/members/cycle/new", checkToken.auth.check, menstruation_ctrl.process.saveMenstruation);
 router.post("/members/cycle", checkToken.auth.check, menstruation_ctrl.process.getMenstruation);
+
+//공유 게시판 관련
+router.get("/board/latest", checkToken.auth.check, board_ctrl.process.getBoardLastest);
+router.get("/board/heart", checkToken.auth.check, board_ctrl.process.getBoardHeart);
+
 
 
 module.exports=router;
