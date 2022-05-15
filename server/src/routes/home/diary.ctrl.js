@@ -19,7 +19,6 @@ const process={
     },
 
     saveImage : async function(request, response){
-        console.log("ctrl");
         const diary=new Diary(request);
         const res=await diary.saveImage();
         console.log(res);

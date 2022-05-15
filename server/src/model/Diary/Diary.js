@@ -114,13 +114,10 @@ class Diary{
 
     async saveImage(){
         try{
-            console.log(this.req.file);
-            console.log(this.req.file.path);
             let where="WHERE member_id=? ORDER BY diary_no DESC limit 0,1";
-            
             const no=(await DiaryStorage.getDiary(this.req.userId, where))[0].diary_no;
             console.log(no);
-            const res=await DiaryStorage.saveImage(this.req.userId, this.req.file.path, no);
+            const res=await DiaryStorage.saveImage(this.req.userId, this.req.file.filename, no);
             console.log(res);
             return res;
 
