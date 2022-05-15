@@ -114,14 +114,12 @@ router.post("/diary/image",checkToken.auth.check, function(req, res, next){
 }, function(req, res, next){
     try{
         sharp(req.file.path)
-        .resize({width:360, height:240, fit:'fill'})
+        .resize({width:240, height:360, fit:'fill'})
         .withMetadata()
         .toBuffer((err, buffer)=>{
             if(err) throw err;
             fs.writeFile(req.file.path, buffer, (err)=>{
                 if(err) throw err;
-                console.log(req.file);
-                console.log(req.file.path);
             })
         })
         next();
