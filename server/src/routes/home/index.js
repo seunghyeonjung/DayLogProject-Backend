@@ -137,7 +137,7 @@ router.post("/members/cycle", checkToken.auth.check, menstruation_ctrl.process.g
 //공유 게시판 관련
 router.get("/board/latest", checkToken.auth.check, board_ctrl.process.getBoardLastest);
 router.get("/board/heart", checkToken.auth.check, board_ctrl.process.getBoardHeart);
-
+router.get("/board/diary", checkToken.auth.check, board_ctrl.process.getBoard);
 
 
 module.exports=router;
