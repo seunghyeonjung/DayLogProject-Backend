@@ -3,45 +3,45 @@
 const db=require("../../config/db");
 
 
-class ScrapStorage{
-    static getScrap(no, id, where){
+class ProfileStorage{
+    static getProfile(id){
         return new Promise((resolve, reject)=>{
-            console.log("스크랩 조회 시작")
-            const query="SELECT * FROM capstone_design.scrap "+where;
+            console.log("프로필 조회 시작");
+            const query="SELECT profile_src, member_id FROM capstone_design.profile WHERE member_id=?";
             console.log(query);
-            db.query(query ,[no, id], (err, data)=>{
+            db.query(query, [id], (err, data)=>{
                 if(err) {
-                    console.log("조회 실패", err);
+                    console.log("프로필 조회 실패", err);
                     reject(err);
                 }
                 else {
-                    console.log("조회 성공");
+                    console.log("프로필 조회 성공");
                     resolve(data);
                 }
             });
         });
     }
 
-    static saveScrap(id, no){
+    static saveProfile(id, no){
         return new Promise((resolve, reject)=>{
-            const query="INSERT INTO capstone_design.scrap(board_no, member_id) VALUES(?, ?)";
+            const query="INSERT INTO capstone_design.like(board_no, member_id) VALUES(?, ?)";
             db.query(query, [no, id] ,(err, data)=>{
                 if(err) reject(err);
                 else {
-                    console.log("스크랩 저장 성공");
+                    console.log("좋아요 저장 성공");
                     resolve({success : true});
                 }
             });
         });
     }
 
-    static removeScrap(id, no){
+    static removeProfile(id, no){
         return new Promise((resolve, reject)=>{
-            const query="DELETE FROM capstone_design.scrap WHERE member_id=? AND board_no=?";
+            const query="DELETE FROM capstone_design.like WHERE member_id=? AND board_no=?";
             db.query(query, [id, no] ,(err, data)=>{
                 if(err) reject(err);
                 else {
-                    console.log("스크랩 삭제 성공");
+                    console.log("좋아요 삭제 성공");
                     resolve({success : true});
                 }
             });
@@ -49,4 +49,4 @@ class ScrapStorage{
     }
 }
 
-module.exports=ScrapStorage;
+module.exports=ProfileStorage;

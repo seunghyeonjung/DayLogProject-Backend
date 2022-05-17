@@ -140,9 +140,9 @@ router.get("/board/heart", checkToken.auth.check, board_ctrl.process.getBoardHea
 router.get("/board/diary", checkToken.auth.check, board_ctrl.process.getBoard);
 router.get("/board/like", checkToken.auth.check, board_ctrl.process.modifyLike);
 router.get("/board/scrap", checkToken.auth.check, board_ctrl.process.modifyScrap);
-router.get("/board/profile", checkToken.auth.check, board_ctrl.process.getBoard);
-router.get("/board/mypage/secret", checkToken.auth.check, board_ctrl.process.getBoard);
-router.get("/board/mypage/share", checkToken.auth.check, board_ctrl.process.getBoard);
-router.get("/board/mypage/scrap", checkToken.auth.check, board_ctrl.process.getBoard);
+router.get("/board/profile", checkToken.auth.check, board_ctrl.process.getProfile);
+router.get("/board/mypage/secret", checkToken.auth.check, board_ctrl.process.mypageSecret);
+router.get("/board/mypage/share", checkToken.auth.check, board_ctrl.process.mypageShare);
+router.get("/board/mypage/scrap", checkToken.auth.check, board_ctrl.process.mypageScrap);
 
 module.exports=router;

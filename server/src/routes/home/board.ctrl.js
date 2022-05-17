@@ -25,18 +25,53 @@ const process={
         return response.json({selected});
     },
 
+    getProfile : async function(request, response){
+        const board=new Board(request);
+        const res=await board.getProfile();
+        //console.log(month_diaries);
+        return response.json({res});
+    },
+
     modifyLike : async function(request, response){
         const board=new Board(request);
-        const selected=await board.modifyLike();
-        //console.log(month_diaries);
-        return response.json({selected});
+        const res=await board.modifyLike();
+        console.log(res);
+        if(res.success==true) return response.json({selected :res.selected});
+        else return response.status(400);
     },
 
     modifyScrap : async function(request, response){
         const board=new Board(request);
-        const selected=await board.modify();
-        //console.log(month_diaries);
-        return response.json({selected});
+        const res=await board.modifyScrap();
+        console.log(res);
+        if(res.success==true) return response.json({selected :res.selected});
+        else return response.status(400);
+        
+    },
+
+    mypageSecret : async function(request, response){
+        const board=new Board(request);
+        const res=await board.getSecret();
+        //console.log(res);
+        return response.json(res);
+        
+    },
+
+    mypageShare : async function(request, response){
+        const board=new Board(request);
+        const res=await board.getShare();
+        //console.log(res);
+        console.log("return");
+        return response.json(res);
+        
+    },
+
+    mypageScrap : async function(request, response){
+        const board=new Board(request);
+        const res=await board.getScrap();
+        //console.log(res);
+        console.log("return");
+        return response.json(res);
         
     },
 
