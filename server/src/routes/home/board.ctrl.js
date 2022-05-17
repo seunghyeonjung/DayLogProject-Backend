@@ -18,6 +18,13 @@ const process={
         return response.json({heartest_diary});
     },
 
+    getBoard : async function(request, response){
+        const board=new Board(request);
+        const selected=await board.getBoard();
+        //console.log(month_diaries);
+        return response.json({selected});
+    },
+
     saveDiary : async function(request, response){
         const diary=new Diary(request);
         const month_diaries=await diary.saveDiary();

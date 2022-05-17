@@ -101,7 +101,8 @@ class Diary{
             if(res.success==true){
                 if(this.req.body.share===true){
                     console.log("추가");
-                    await BoardStorage.saveBoard(this.req.userId, no, this.req.body.content, this.req.body.date, image);
+                    const like=0;
+                    await BoardStorage.saveBoard(this.req.userId, no, this.req.body.content, this.req.body.date, image, like);
                 }
 
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
@@ -209,7 +210,7 @@ class Diary{
             const year=date.substring(0,4);
             const month=date.substring(5,7);
             const last_day=getDay(year, month);
-            console.log(shared);
+   
             if(shared==="false"){
                 change=1;
                 res=await DiaryStorage.modifyShare(change, index);
@@ -223,15 +224,22 @@ class Diary{
                 shared=(await DiaryStorage.getDiary(this.req.userId, where))[0].shared;
                 const content=(await DiaryStorage.getDiary(this.req.userId, where))[0].content;
                 const image=(await DiaryStorage.getDiary(this.req.userId, where))[0].image;
-                console.log(shared, content, image);
+                const like=(await DiaryStorage.getDiary(this.req.userId, where))[0].like_count;
+                console.log(shared, content, image, like);
 
                 if(shared=='true'){
-                    console.log("공유 변경으로 인한 추가")
-                    await BoardStorage.saveBoard(this.req.userId, index, content, date, image);
+                    console.log("공유 변경으로 인한 추가");
+                    where="WHERE member_id=? AND diary_no="+index;
+
+                    await BoardStorage.saveBoard(this.req.userId, index, content, date, image, like);
                 }
 
                 else if(shared=='false'){
-                    console.log("공유 변경으로 인한 삭제")
+                    console.log("공유 변경으로 인한 삭제");
+                    where="WHERE board_writer=? AND diary_no="+index;
+                    const like=(await BoardStorage.getBoard(where, this.req.userId))[0].like_count;
+
+                    await DiaryStorage.modifyLike(like, index);
                     await BoardStorage.removeBoard(index);
                 }
 

@@ -1,6 +1,8 @@
 "use strict"
 
 const BoardStorage=require("./BoardStorage");
+const UserStorage=require("../User/UserStorage");
+const { urlencoded } = require("body-parser");
 //const moment=require('moment');
 //const { KEYBCS2_BIN } = require("mysql/lib/protocol/constants/charsets");
 
@@ -45,32 +47,11 @@ class Board{
     async getBoardLatest(){
         try{
             let where;
-            //const year=this.req.query.year;
-            //const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
-            //const last_day=getDay(year,month);
-            //let month_diary=[];
-            //let current_diary=[];
            
             where="ORDER BY board_post_date DESC";
             const latest_diary=await BoardStorage.getBoard(where);
             console.log(latest_diary);
             return latest_diary;
-            
-            /*else{
-                where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                month_diary=await DiaryStorage.getDiary(this.req.userId, where);
-
-                //console.log("diary : ",month_diary);
-
-                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
-                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
-
-                //console.log("current diary : ",current_diary);
-
-                if(month_diary.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", month_diary, current_diary};
-
-            }*/
 
         }catch(err){
             return { success : false, message : err}
@@ -80,37 +61,32 @@ class Board{
     async getBoardHeart(){
         try{
             let where;
-            //const year=this.req.query.year;
-            //const month = Number(this.req.query.month) < 10 ? '0'+this.req.query.month : this.req.query.month;
-            //const last_day=getDay(year,month);
-            //let month_diary=[];
-            //let current_diary=[];
-           
+            
             where="ORDER BY board_like_count DESC";
             const heartest_diary=await BoardStorage.getBoard(where);
             return heartest_diary;
-            
-            /*else{
-                where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                month_diary=await DiaryStorage.getDiary(this.req.userId, where);
-
-                //console.log("diary : ",month_diary);
-
-                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
-                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
-
-                //console.log("current diary : ",current_diary);
-
-                if(month_diary.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", month_diary, current_diary};
-
-            }*/
 
         }catch(err){
             return { success : false, message : err}
         }
     }
+    
+    async getBoard(){
+        try{
+            let where="WHERE board_writer=? AND board_no="+this.req.query.no;
+        
+            const {diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+            const writer_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
+            const writer_profile_url=null; //test 때만
+            const selected={diary_no, content, image_url, like_count, date, writer_id, writer_nickname, writer_profile_url};
 
+            //console.log(diary_no, content, image_url, like_count, date, board_writer, writer_nickname, writer_profile_url, selected);
+            return selected;
+
+        }catch(err){
+            return { success : false, message : err}
+        }
+    }
 
     async saveDiary(){
         try{
