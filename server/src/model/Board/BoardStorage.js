@@ -35,17 +35,6 @@ class BoardStorage{
         });
     }
 
-    static saveImage(id, image, no){
-        return new Promise((resolve, reject)=>{
-            //const query1="SELECT diary_no FROM capstone_design.diary  where member_id=?"
-            const query="UPDATE capstone_design.diary SET diary_image=? WHERE member_id=? and diary_no=?";
-            db.query(query, [image, id, no] ,(err, data)=>{
-                if(err) reject(err);
-                else resolve({success : true});
-            });
-        });
-    }
-
     static removeBoard(index){
         return new Promise((resolve, reject)=>{
             const query="DELETE FROM capstone_design.board WHERE diary_no=?";
@@ -59,20 +48,10 @@ class BoardStorage{
         });
     }
 
-    static modifyDiary(index, id, content, date, image, emotion, share){
+    static modifyLike(set, no){
         return new Promise((resolve, reject)=>{
-            const query="UPDATE capstone_design.diary SET diary_content=?, diary_date=?, diary_image=?, emotion=?, share_y_n=? WHERE diary_no=?";
-            db.query(query, [content, date, image, emotion, share, index] ,(err)=>{
-                if(err) reject(err);
-                else resolve({success : true});
-            });
-        });
-    }
-
-    static modifyShare(change, index){
-        return new Promise((resolve, reject)=>{
-            const query="UPDATE capstone_design.diary SET share_y_n=? WHERE diary_no=?";
-            db.query(query, [change, index] ,(err)=>{
+            const query="UPDATE capstone_design.board SET board_like_count="+set+" WHERE board_no=?";
+            db.query(query, [no] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
             });
