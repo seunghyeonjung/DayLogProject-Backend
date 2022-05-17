@@ -3,7 +3,7 @@
 const db=require("../../config/db");
 
 
-class BoardStorage{
+class LikeStorage{
     static getLike(no, id){
         return new Promise((resolve, reject)=>{
             console.log("좋아요 조회 시작");
@@ -49,4 +49,4 @@ class BoardStorage{
     }
 }
 
-module.exports=BoardStorage;
+module.exports=LikeStorage;
