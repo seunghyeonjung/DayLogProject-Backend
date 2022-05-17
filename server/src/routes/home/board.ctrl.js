@@ -25,41 +25,19 @@ const process={
         return response.json({selected});
     },
 
-    saveDiary : async function(request, response){
-        const diary=new Diary(request);
-        const month_diaries=await diary.saveDiary();
+    modifyLike : async function(request, response){
+        const board=new Board(request);
+        const selected=await board.modifyLike();
         //console.log(month_diaries);
-        return response.json(month_diaries);
+        return response.json({selected});
     },
 
-    saveImage : async function(request, response){
-        const diary=new Diary(request);
-        const res=await diary.saveImage();
-        console.log(res);
-        if(res.success==true) return response.send({message : true});
-        else return response.status(400).send({message : "데이터베이스 저장 실패"});
+    modifyScrap : async function(request, response){
+        const board=new Board(request);
+        const selected=await board.modify();
+        //console.log(month_diaries);
+        return response.json({selected});
         
-    },
-
-    removeDiary : async function(request, response){
-        const diary=new Diary(request);
-        const month_diaries=await diary.removeDiary();
-        console.log(month_diaries);
-        return response.json(month_diaries);
-    },
-
-    modifyDiary : async function(request, response){
-        const diary=new Diary(request);
-        const month_diaries=await diary.modifyDiary();
-        console.log(month_diaries);
-        return response.json(month_diaries);
-    },
-
-    modifyShare : async function(request, response){
-        const diary=new Diary(request);
-        const month_diaries=await diary.modifyShare();
-        console.log(month_diaries);
-        return response.json(month_diaries);
     },
 
 
