@@ -7,7 +7,7 @@ class ProfileStorage{
     static getProfile(id){
         return new Promise((resolve, reject)=>{
             console.log("프로필 조회 시작");
-            const query="SELECT profile_src, member_id FROM capstone_design.profile WHERE member_id=?";
+            const query="SELECT CONCAT('http://localhost:3001/images/', profile_src) as profile_src, member_id FROM capstone_design.profile WHERE member_id=?";
             console.log(query);
             db.query(query, [id], (err, data)=>{
                 if(err) {

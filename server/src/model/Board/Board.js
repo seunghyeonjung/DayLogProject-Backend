@@ -42,21 +42,25 @@ class Board{
     
     async getBoard(){
         try{
-            let where="WHERE board_writer=? AND board_no="+this.req.query.no;
+            let where="WHERE diary_no="+this.req.query.no;
             let is_shared;
             let is_liked;
-        
-            const {diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+
+            const board=(await BoardStorage.getBoard(where, this.req.userId))[0].board_no;
+            console.log(board);
+            const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
             const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
             const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
+            console.log(board_no, diary_no, content, image_url, like_count, date, writer_id );
+
             where="WHERE board_no=? AND member_id=?"
-            const is_scrap=await ScrapStorage.getScrap(this.req.query.no, this.req.userId, where);
+            const is_scrap=await ScrapStorage.getScrap(board, this.req.userId, where);
             console.log(is_scrap);
             if(is_scrap.length!=0) is_shared=true;
             else is_shared=false;
 
-            const is_like=await LikeStorage.getLike(this.req.query.no, this.req.userId);
+            const is_like=await LikeStorage.getLike(board, this.req.userId);
             console.log(is_like);
             if(is_like.length!=0) is_liked=true;
             else is_liked=false;
@@ -72,13 +76,13 @@ class Board{
 
     async getSecret(){
         try{
-            let where="WHERE member_id=? AND share_y_n=0";
+            let where="WHERE member_id=? AND share_y_n=0 ORDER BY diary_date DESC";
         
             const secret_diary=await DiaryStorage.getDiary(this.req.userId, where);
-            const nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
-            const profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
+            const my_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
+            const my_profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
 
-            return {nickname, profile_url, secret_diary};
+            return {my_nickname, my_profile_url, secret_diary};
 
         }catch(err){
             return { success : false, message : err}
@@ -87,14 +91,14 @@ class Board{
 
     async getShare(){
         try{
-            let where="WHERE member_id=? AND share_y_n=1";
+            let where="WHERE member_id=? AND share_y_n=1 ORDER BY diary_date DESC";
         
             const share_diary=await DiaryStorage.getDiary(this.req.userId, where);
-            const nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
-            const profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
+            const my_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
+            const my_profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
 
             console.log("리턴")
-            return {nickname, profile_url, share_diary};
+            return {my_nickname, my_profile_url, share_diary};
 
         }catch(err){
             return { success : false, message : err}
@@ -115,19 +119,19 @@ class Board{
                 where="WHERE board_no="+board_no[i].board_no;
                 const diary_no=(await BoardStorage.getBoard(where, ""))[0].diary_no;
                 console.log(diary_no);
-                where="WHERE member_id=? AND diary_no="+diary_no;
-                const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+                where="WHERE diary_no="+diary_no;
+                const diary=(await DiaryStorage.getDiary("", where))[0];
                 console.log(diary);
                 scrap_diary.push(diary);
             }
 
             console.log(scrap_diary);
 
-            const nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
-            const profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
+            const my_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
+            const my_profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
 
             //console.log(diary_no, content, image_url, like_count, date, board_writer, writer_nickname, writer_profile_url, selected);
-            return {nickname, profile_url, scrap_diary};
+            return {my_nickname, my_profile_url, scrap_diary};
 
         }catch(err){
             return { success : false, message : err}
@@ -137,13 +141,13 @@ class Board{
     async getProfile(){
         try{
             let where;
-            console.log(this.req.query.member_id);
+            console.log(this.req.query.name);
             where="WHERE board_writer=? ORDER BY board_post_date DESC";
-            const share_diary=await BoardStorage.getBoard(where, this.req.query.member_id);
+            const share_diary=await BoardStorage.getBoard(where, this.req.query.name);
             console.log(share_diary);
-            const writer_nickname=(await UserStorage.getUserInfo(this.req.query.member_id)).nickname;
+            const writer_nickname=(await UserStorage.getUserInfo(this.req.query.name)).nickname;
             console.log(writer_nickname);
-            const writer_profile_url=(await ProfileStorage.getProfile(this.req.query.member_id))[0].profile_src; //test 때만
+            const writer_profile_url=(await ProfileStorage.getProfile(this.req.query.name))[0].profile_src; //test 때만
             console.log(writer_profile_url);
             return {writer_nickname, writer_profile_url, share_diary};
 
@@ -154,12 +158,13 @@ class Board{
 
     async modifyLike(){
         try{
-            const no=this.req.query.no;
-            console.log(no);
             let where;
             let set;
             let is_shared;
 
+            where="WHERE diary_no="+this.req.query.no;
+            const no=(await BoardStorage.getBoard(where, this.req.userId))[0].board_no;
+            console.log(no);
             where="WHERE board_no=? AND member_id=?"
             const is_scrap=await ScrapStorage.getScrap(no, this.req.userId, where);
             console.log(is_scrap);
@@ -176,8 +181,8 @@ class Board{
                 const mes=await LikeStorage.removeLike(this.req.userId, no);
 
                 if(mes.success==true){
-                    where="WHERE board_writer=? AND board_no="+no;
-                    const {diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    where="WHERE board_no="+no;
+                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
                     const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
@@ -195,8 +200,8 @@ class Board{
                 const mes=await LikeStorage.saveLike(this.req.userId, no);
 
                 if(mes.success==true){
-                    where="WHERE board_writer=? AND board_no="+no;
-                    const {diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    where="WHERE board_no="+no;
+                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
                     const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
@@ -215,10 +220,12 @@ class Board{
 
     async modifyScrap(){
         try{
-            const no=this.req.query.no;
-            console.log(no);
             let where;
             let is_liked;
+
+            where="WHERE diary_no="+this.req.query.no;
+            const no=(await BoardStorage.getBoard(where, this.req.userId))[0].board_no;
+            console.log(no);
 
             const is_like=await LikeStorage.getLike(no, this.req.userId);
             console.log(is_like);
@@ -234,8 +241,8 @@ class Board{
                 const mes=await ScrapStorage.removeScrap(this.req.userId, no);
 
                 if(mes.success==true){
-                    where="WHERE board_writer=? AND board_no="+no;
-                    const {diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    where="WHERE board_no="+no;
+                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
                     const writer_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
 
@@ -252,8 +259,8 @@ class Board{
                 const mes=await ScrapStorage.saveScrap(this.req.userId, no);
 
                 if(mes.success==true){
-                    where="WHERE board_writer=? AND board_no="+no;
-                    const {diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    where="WHERE board_no="+no;
+                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
                     const writer_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
 
