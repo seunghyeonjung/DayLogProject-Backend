@@ -29,7 +29,7 @@ const process={
         const board=new Board(request);
         const res=await board.getProfile();
         //console.log(month_diaries);
-        return response.json({res});
+        return response.json(res);
     },
 
     modifyLike : async function(request, response){
