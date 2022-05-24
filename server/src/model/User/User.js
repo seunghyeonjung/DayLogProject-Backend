@@ -3,6 +3,8 @@
 //jwt=header의 인코딩 값과 payload의 인코딩 값을 합친 해시값
 
 const UserStorage=require("./UserStorage");
+const QAStorage=require("../QA/QAStorage");
+const ProfileStorage=require("../User/ProfileStorage"); 
 const jwt=require('jsonwebtoken');
 const secret=process.env.JWT_SECRET_KEY;
 
@@ -41,9 +43,24 @@ class User{
 
                     console.log("1 : "+accessToken+", 2 : "+refreshToken);
 
-                    const res=await UserStorage.saveToken(user.member_id, refreshToken);
+                    //const res=await UserStorage.saveToken(user.member_id, refreshToken); //test 할 때만 실제로는 주석 지우기
+                    const now=new Date().toISOString().slice(0,10);
+                    const QA=(await QAStorage.getQA(user.member_id, 'ORDER BY qa_date DESC limit 0,1'))[0];
+                    const lastDate=QA.qa_date;
+                    let isFirst;
 
-                    return { success : true, AT : accessToken, RT : refreshToken, user : user.nickname};
+                    if(now==lastDate) isFirst=true;
+                    else isFirst=false;
+
+                    const userInfo=await UserStorage.getUserInfo(user.member_id);
+                    const nickname=userInfo.nickname;
+                    const name=userInfo.name;
+                    const email=userInfo.email;
+                    const profile_image_url=(await ProfileStorage.getProfile(user.member_id))[0].profile_src;
+
+                    //console.log(userInfo, name, nickname, email, profile_image_url);
+
+                    return { success : true, AT : accessToken, RT : refreshToken, isFirst, name, nickname, profile_image_url, email};
                 }
                 return { status : 401, message: "비밀번호가 틀렸습니다." };
             }
