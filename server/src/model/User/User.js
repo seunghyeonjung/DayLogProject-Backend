@@ -49,8 +49,8 @@ class User{
                     const lastDate=QA.qa_date;
                     let isFirst;
 
-                    if(now==lastDate) isFirst=true;
-                    else isFirst=false;
+                    if(now==lastDate) isFirst=false;
+                    else isFirst=true;
 
                     const userInfo=await UserStorage.getUserInfo(user.member_id);
                     const nickname=userInfo.nickname;
@@ -62,9 +62,9 @@ class User{
 
                     return { success : true, AT : accessToken, RT : refreshToken, isFirst, name, nickname, profile_image_url, email};
                 }
-                return { status : 401, message: "비밀번호가 틀렸습니다." };
+                return { success : false, status : 401, message: "비밀번호가 틀렸습니다." };
             }
-            return { status : 401, message: "존재하지 않는 아이디입니다." };
+            return { success : false, status : 401, message: "존재하지 않는 아이디입니다." };
         } catch(err){
             throw err
         }
