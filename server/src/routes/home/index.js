@@ -58,6 +58,9 @@ const diary_ctrl=require("./diary.ctrl");
 const menstruation_ctrl=require("./menstruation.ctrl");
 const board_ctrl=require("./board.ctrl");
 
+//const badge_ctrl=require("./badge.ctrl");
+const qa_ctrl=require("./qa.ctrl");
+
 //router.get("/", user_ctrl.output.hello);
 //router.get("/login", user_ctrl.output.login);
 router.post("/members/login", user_ctrl.process.login); //로그인
@@ -165,5 +168,10 @@ router.get("/board/profile", checkToken.auth.check, board_ctrl.process.getProfil
 router.get("/board/mypage/secret", checkToken.auth.check, board_ctrl.process.mypageSecret);
 router.get("/board/mypage/share", checkToken.auth.check, board_ctrl.process.mypageShare);
 router.get("/board/mypage/scrap", checkToken.auth.check, board_ctrl.process.mypageScrap);
+
+//qa 관련
+router.get("/QA", checkToken.auth.check, qa_ctrl.process.getQA);
+router.post("/QA", checkToken.auth.check, qa_ctrl.process.saveQA);
+router.get("/QA/calendar", checkToken.auth.check, qa_ctrl.process.getQAcalendar);
 
 module.exports=router;
