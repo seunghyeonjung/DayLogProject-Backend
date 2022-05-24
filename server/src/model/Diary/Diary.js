@@ -126,6 +126,19 @@ class Diary{
             const no=(await DiaryStorage.getDiary(this.req.userId, where))[0].diary_no;
             console.log(no);
             const res=await DiaryStorage.saveImage(this.req.userId, this.req.file.filename, no);
+
+            if(res.success==true){
+                const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+                const share=diary.shared;
+                console.log("save board image",diary, share);
+                if(share=="true"){
+                    const image=diary.image_url;
+                    console.log("save board image",image);
+
+                    await BoardStorage.modifyImage(image, no);
+                }
+                
+            }
             console.log(res);
             return res;
 

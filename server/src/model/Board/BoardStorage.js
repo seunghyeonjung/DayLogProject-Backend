@@ -7,8 +7,8 @@ class BoardStorage{
     static getBoard(where, id){
         return new Promise((resolve, reject)=>{
             console.log("조회 시작")
-            const query="SELECT board_no, board_no as diary_no, board_content as content, CONCAT('http://localhost:3001/images/', board_image) as image_url, board_like_count as like_count, board_post_date as date, diary_no, board_writer as writer_id, DATE_FORMAT(board_post_date,'%Y-%m-%d') AS date FROM capstone_design.board " + where;
-            console.log(query);
+            const query="SELECT board_no, board_no as diary_no, board_content as content, board_image as image_url, board_like_count as like_count, board_post_date as date, diary_no, board_writer as writer_id, DATE_FORMAT(board_post_date,'%Y-%m-%d') AS date FROM capstone_design.board " + where;
+            //console.log(query);
             db.query(query ,[id], (err, data)=>{
                 if(err) {
                     console.log("조회 실패", err);
@@ -52,6 +52,16 @@ class BoardStorage{
         return new Promise((resolve, reject)=>{
             const query="UPDATE capstone_design.board SET board_like_count="+set+" WHERE board_no=?";
             db.query(query, [no] ,(err)=>{
+                if(err) reject(err);
+                else resolve({success : true});
+            });
+        });
+    }
+
+    static modifyImage(image, no){
+        return new Promise((resolve, reject)=>{
+            const query="UPDATE capstone_design.board SET board_image=? WHERE diary_no=?";
+            db.query(query, [image, no] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
             });
