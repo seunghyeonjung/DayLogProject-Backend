@@ -93,7 +93,7 @@ router.get("/diary/share", checkToken.auth.check, diary_ctrl.process.modifyShare
 router.put("/diary", checkToken.auth.check, diary_ctrl.process.modifyDiary);
 router.post("/diary", checkToken.auth.check, diary_ctrl.process.saveDiary);
 router.delete("/diary",checkToken.auth.check, diary_ctrl.process.removeDiary);
-router.post("/diary/image",checkToken.auth.check, function(req, res, next){
+/*router.post("/diary/image",checkToken.auth.check, function(req, res, next){
     diary_upload(req, res, function(err){
         console.log(req.file);
         console.log(req.file.path);
@@ -115,6 +115,7 @@ router.post("/diary/image",checkToken.auth.check, function(req, res, next){
     try{
         sharp(req.file.path)
         .resize({width:240, height:360, fit:'fill'})
+        //.jpeg({quality : 100})
         .withMetadata()
         .toBuffer((err, buffer)=>{
             if(err) throw err;
@@ -127,6 +128,26 @@ router.post("/diary/image",checkToken.auth.check, function(req, res, next){
     catch(err){
         console.log(err);
     }
+},diary_ctrl.process.saveImage);*/
+
+router.post("/diary/image",checkToken.auth.check, function(req, res, next){
+    diary_upload(req, res, function(err){
+        console.log(req.file);
+        console.log(req.file.path);
+        if(req.fileValidationError!=null){
+            console.log(req.fileValidationError);
+            return res.status(400).send(req.fileValidationError);
+        }
+        if(err) {
+            console.log(err);
+            return res.status(400).send({message : err});
+        }
+        else{
+            console.log("ok", req.file.filename, req.file.path);
+            image=req.file.filename;
+            next();
+        }
+    })
 },diary_ctrl.process.saveImage);
 
 
