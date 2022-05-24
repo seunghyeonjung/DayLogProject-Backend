@@ -19,7 +19,7 @@ const process={
             secure: true,
         });
         console.log(res);
-        if(res.success===true) return response.send({success : res.success, AT : res.AT, isFisrt : res.isFirst, name : res.name, nickname : res.nickname, profile_image_url : res.profile_image_url, email : res.email, message : res.message});
+        if(res.success===true) return response.send({success : res.success, AT : res.AT, isFirst : res.isFirst, name : res.name, nickname : res.nickname, profile_image_url : res.profile_image_url, email : res.email, message : res.message});
         else return response.status(401).send(res.message);
     },
 
