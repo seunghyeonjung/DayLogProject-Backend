@@ -5,7 +5,9 @@
 const UserStorage=require("./UserStorage");
 const QAStorage=require("../QA/QAStorage");
 const ProfileStorage=require("../User/ProfileStorage"); 
+const BadgeStorage=require("../Badge/BadgeStorage");
 const jwt=require('jsonwebtoken');
+const moment = require("moment");
 const secret=process.env.JWT_SECRET_KEY;
 
 class User{
@@ -48,9 +50,12 @@ class User{
                     let isFirst;
                     const now=new Date(+new Date()+3240*10000).toISOString().split("T")[0];
                     const QA=(await QAStorage.getQA(user.member_id, 'ORDER BY qa_date DESC limit 0,1'))[0];
-
+                    console.log(QA);
                     if(QA==undefined) lastDate=null;
-                    else lastDate=QA.qa_date;
+                    else {
+                        lastDate=new moment(QA.date);
+                        lastDate=lastDate.format("YYYY-MM-DD");
+                    }
                 
                     console.log("==============\n",now, lastDate);
                     if(now==lastDate) isFirst=false;
@@ -91,6 +96,11 @@ class User{
             console.log(this.body);
             const res=await UserStorage.saveUserInfo(this.body);
             if(res.success==true) await ProfileStorage.saveProfile(this.body.id, null);
+
+            for(let i = 1 ; i < 13 ; i++ ){
+                const num = await BadgeStorage.numBadge(i, this.body.id);
+            }
+
             return res;
 
         }catch(err){

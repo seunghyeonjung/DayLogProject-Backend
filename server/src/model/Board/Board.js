@@ -171,7 +171,7 @@ class Board{
         }
     }
 
-    async modifyLike(){
+    async modifyLike(){ //좋아요 누르면 바로 diary storage에도 저장..
         try{
             let where;
             let set;
