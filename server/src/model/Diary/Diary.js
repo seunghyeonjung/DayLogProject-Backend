@@ -257,7 +257,7 @@ class Diary{
                 }
 
                 where="WHERE member_id=? AND diary_no="+this.req.query.no;
-                selected_diary=month_diary=await DiaryStorage.getDiary(this.req.userId, where);
+                selected_diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
 
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
                 month_diary=await DiaryStorage.getDiary(this.req.userId, where);
