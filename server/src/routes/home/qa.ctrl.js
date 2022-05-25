@@ -13,6 +13,7 @@ const process={
 
 
     saveQA : async function(request, response){
+        console.log("??");
         const qa=new QA(request);
         const month_qa=await qa.saveQA();
         console.log(month_qa);

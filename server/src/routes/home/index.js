@@ -58,7 +58,8 @@ const diary_ctrl=require("./diary.ctrl");
 const menstruation_ctrl=require("./menstruation.ctrl");
 const board_ctrl=require("./board.ctrl");
 
-//const badge_ctrl=require("./badge.ctrl");
+const badge_ctrl=require("./badge.ctrl");
+
 const qa_ctrl=require("./qa.ctrl");
 
 //router.get("/", user_ctrl.output.hello);
@@ -132,7 +133,13 @@ router.get("/board/mypage/secret", checkToken.auth.check, board_ctrl.process.myp
 router.get("/board/mypage/share", checkToken.auth.check, board_ctrl.process.mypageShare);
 router.get("/board/mypage/scrap", checkToken.auth.check, board_ctrl.process.mypageScrap);
 
-//qa 관련
+//뱃지 관련
+router.get("/badge", checkToken.auth.check, badge_ctrl.process.getBadge);
+router.get("/badge/challenge", checkToken.auth.check, badge_ctrl.process.modifyBadge);
+router.get("/badge/check", checkToken.auth.check, badge_ctrl.process.checkBadge);
+
+
+//Q&A 관련
 router.get("/QA", checkToken.auth.check, qa_ctrl.process.getQA);
 router.post("/QA", checkToken.auth.check, qa_ctrl.process.saveQA);
 router.get("/QA/calendar", checkToken.auth.check, qa_ctrl.process.getQAcalendar);

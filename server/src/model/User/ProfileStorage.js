@@ -3,7 +3,7 @@
 const db=require("../../config/db");
 
 
-class ProfileStorage{
+class ProfileStorage{//프로필 왜 안 가지..
     static getProfile(id){
         return new Promise((resolve, reject)=>{
             console.log("프로필 조회 시작");

@@ -21,7 +21,13 @@ class ScheduleStorage{
             const query="INSERT INTO capstone_design.schedule(member_id, schedule_title, schedule_content, schedule_start_date, schedule_end_date) VALUES(?, ?, ?, ?, ?)";
             db.query(query, [id, title, content, start_date, end_date] ,(err, data)=>{
                 if(err) reject(err);
-                else resolve({success : true});
+                else {
+                    console.log("-------------");
+                    const query7 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                    db.query(query7, [id, 7]);
+                    
+                    resolve({success : true});
+                }
             });
         });
     }

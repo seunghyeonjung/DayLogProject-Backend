@@ -6,6 +6,8 @@ const QAStorage=require("./QAStorage");
 
 const QAInfo = require("./QAInfo.js");
 
+const moment = require("moment");
+
 
 function QAlist (Info){
     //렌덤으로 하나 선정하기
@@ -24,6 +26,48 @@ function QAlist (Info){
     let dayQA = {question : Info[rand].QAInfo, choice : Ans};
     
     console.log(dayQA);
+    return dayQA;
+};
+
+function monthQAlist (month_list ,Info){
+
+    let Ans = [];
+
+ 
+    for (let i = 0 ; i < month_list.length ; i++){
+        let date = moment(month_list[i].date);
+
+        let a = {date : date.format("YYYY-MM-DD"),
+                 emoji_url: "",
+                 emoji_index:month_list[i].choice};
+
+        Ans.push(a);
+    }
+
+    //let a = CONCAT('http://localhost:3001/emoji/smile.png');
+    let dayQA = {select_emogi_url : "http://localhost:3001/emoji/smile.png", description:"선택지 저장안하는데...어카지", choice : Ans};
+    
+    return dayQA;
+};
+
+function nowQAlist (month_list ,Info){
+
+    let Ans = [];
+
+ 
+    for (let i = 0 ; i < month_list.length ; i++){
+        let date = moment(month_list[i].date);
+
+        let a = {date : date.format("YYYY-MM-DD"),
+                 emoji_index:month_list[i].choice};
+
+        
+        Ans.push(a);
+    }
+
+    //let a = CONCAT('http://localhost:3001/emoji/smile.png');
+    let dayQA = {month_emoji : Ans};
+    
     return dayQA;
 };
 
@@ -52,31 +96,24 @@ class QA{
     //선택 정보 저장하기 (날짜이모지 보내기)
     async saveQA(){
         try{
-
+            console.log("왔나?");
+            console.log(this.body.userId,this.body.query.date, this.body.query.index);
             const save = await QAStorage.saveQA(this.body.userId,this.body.query.date, this.body.query.index);
+            console.log("왔나?");
+
+            const month_list = await QAStorage.getQA(this.body.userId); //한달치 가져올부분
+
+            const Info = await QAInfo.Info(); // QA 정보 : QAInfo / A1 A2 A3
+
 
             
-            const now = new Date();	// 현재 날짜 및 시간
+            //const now = new Date();	// 현재 날짜 및 시간
             //console.log(now);
-            const m = (now.getMonth()+1); //getMonth()로 월을 구하면 원래 월의 -1 된 값이 나옵니다. 
-            //console.log(m);
 
-            const qachoice = await QAStorage.getQA(this.body.userId); //현재달 정보 가져와야함
-
-            let nowmonth = [];
-
-            for(let i = 0 ; i < qachoice.length ; i++){
-                let d = moment(qachoice[i].date); //시작일 달
+            const monthQA =new nowQAlist(month_list, Info);
 
 
-            }
-
-
-
-
-           
-  
-                  
+            return monthQA;
 
         }
             
@@ -89,8 +126,17 @@ class QA{
     async getQAcalendar(){
         try{
            
-  
-                  
+            const month_list = await QAStorage.getQA(this.body.userId); //한달치 가져올부분
+
+            const Info = await QAInfo.Info(); // QA 정보 : QAInfo / A1 A2 A3
+            
+            //const now = new Date();	// 현재 날짜 및 시간
+            //console.log(now);
+
+            const monthQA =new nowQAlist(month_list, Info);
+
+
+            return monthQA;       
 
         }
             
