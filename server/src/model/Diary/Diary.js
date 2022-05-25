@@ -147,7 +147,7 @@ class Diary{
         }
     }
 
-    async removeDiary(){
+    async removeDiary(){//삭제 시 이미지도
         try{
             const index=this.req.query.no;
             let month_diary=[];

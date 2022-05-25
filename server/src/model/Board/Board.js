@@ -42,13 +42,14 @@ class Board{
     
     async getBoard(){
         try{
-            console.log(this.req.query.no);
-            let where="WHERE member_id=? AND diary_no="+this.req.query.no;
+            //console.log("++++++++++++시작",this.req.query.no);
+            let where="WHERE diary_no="+this.req.query.no;
             let is_shared;
             let is_liked;
 
-            
+            //console.log("+++++++++++++다이어리",this.req.query.no);
             const {diary_no, content, image_url, like_count, date, member_id, shared}=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+            //console.log("+++++++++++++다이어리 끝",this.req.query.no);
             const writer_nickname=(await UserStorage.getUserInfo(member_id)).nickname;
             const writer_profile_url=(await ProfileStorage.getProfile(member_id))[0].profile_src; //test 때만
 
@@ -161,9 +162,9 @@ class Board{
             console.log(share_diary);
             const writer_nickname=(await UserStorage.getUserInfo(this.req.query.name)).nickname;
             console.log(writer_nickname);
-            const writer_profile_url=(await ProfileStorage.getProfile(this.req.query.name))[0].profile_src; //test 때만
-            console.log(writer_profile_url);
-            return {writer_nickname, writer_profile_url, share_diary};
+            const writer_profile=(await ProfileStorage.getProfile(this.req.query.name))[0].profile_src; //test 때만
+            console.log(writer_profile);
+            return {writer_nickname, writer_profile, share_diary};
 
         }catch(err){
             return { success : false, message : err}
