@@ -16,6 +16,9 @@ const diary_ctrl=require("./diary.ctrl");
 
 const menstruation_ctrl=require("./menstruation.ctrl");
 
+const badge_ctrl=require("./badge.ctrl");
+
+const qa_ctrl=require("./qa.ctrl");
 
 //router.get("/", user_ctrl.output.hello);
 //router.get("/login", user_ctrl.output.login);
@@ -57,6 +60,19 @@ router.delete("/diary",checkToken.auth.check, diary_ctrl.process.removeDiary);
 //생리 관련
 router.post("/members/cycle/new", checkToken.auth.check, menstruation_ctrl.process.saveMenstruation);
 router.post("/members/cycle", checkToken.auth.check, menstruation_ctrl.process.getMenstruation);
+
+//뱃지 관련
+router.get("/badge", checkToken.auth.check, badge_ctrl.process.getBadge);
+router.get("/badge/challenge", checkToken.auth.check, badge_ctrl.process.modifyBadge);
+router.get("/badge/check", checkToken.auth.check, badge_ctrl.process.checkBadge);
+
+
+//Q&A 관련
+router.get("/QA", checkToken.auth.check, qa_ctrl.process.getQA);
+router.post("/QA", checkToken.auth.check, qa_ctrl.process.saveQA);
+router.get("/QA/calendar", checkToken.auth.check, qa_ctrl.process.getQAcalendar);
+
+
 
 
 module.exports=router;

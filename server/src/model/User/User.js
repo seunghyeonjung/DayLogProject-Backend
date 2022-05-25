@@ -2,9 +2,11 @@
 //User=데이터를 가지고 검증 및 조작하는 역할만 수행
 //jwt=header의 인코딩 값과 payload의 인코딩 값을 합친 해시값
 
+const BadgeStorage=require("../Badge/BadgeStorage");
 const UserStorage=require("./UserStorage");
 const jwt=require('jsonwebtoken');
 const secret=process.env.JWT_SECRET_KEY;
+
 
 class User{
     constructor(body){
@@ -67,6 +69,13 @@ class User{
     async register(){
         try{
             const res=await UserStorage.saveUserInfo(this.body);
+            //뱃지리스트 기록이 없다면 만들기
+            //뱃지 1~12넣기
+            for(let i = 1 ; i < 13 ; i++ ){
+                const num = await BadgeStorage.numBadge(i, this.body.id);
+            }
+    
+            
             return res;
 
         }catch(err){
@@ -89,5 +98,7 @@ class User{
     }
 
 }
+
+    
 
 module.exports=User;

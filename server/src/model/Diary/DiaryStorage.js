@@ -19,7 +19,20 @@ class DiaryStorage{
             const query="INSERT INTO capstone_design.diary(member_id, diary_content, diary_date, diary_image, emotion, share_y_n) VALUES(?, ?, ?, ?, ?, ?)";
             db.query(query, [id, content, date, image, emotion, share] ,(err, data)=>{
                 if(err) reject(err);
-                else resolve({success : true});
+                else {
+                    //기록하고 카운트하기 성공..... 
+                console.log("-------------");
+                const query4 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                db.query(query4, [id, 1]);
+                console.log("-------------");
+                const query5 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                db.query(query5, [id, 2]);
+                console.log("-------------");
+                const query6 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                db.query(query6, [id, 3]);
+ 
+                    
+                    resolve({success : true})};
             });
         });
     }
