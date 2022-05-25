@@ -35,7 +35,7 @@ const process={
     modifyLike : async function(request, response){
         const board=new Board(request);
         const res=await board.modifyLike();
-        console.log(res);
+        //console.log(res);
         if(res.success==true) return response.json({selected :res.selected});
         else return response.status(400);
     },
@@ -43,7 +43,7 @@ const process={
     modifyScrap : async function(request, response){
         const board=new Board(request);
         const res=await board.modifyScrap();
-        console.log(res);
+        //console.log(res);
         if(res.success==true) return response.json({selected :res.selected});
         else return response.status(400);
         
