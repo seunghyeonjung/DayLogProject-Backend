@@ -22,13 +22,13 @@ class ProfileStorage{
         });
     }
 
-    static saveProfile(id, no){
+    static saveProfile(id, profile){
         return new Promise((resolve, reject)=>{
-            const query="INSERT INTO capstone_design.like(board_no, member_id) VALUES(?, ?)";
-            db.query(query, [no, id] ,(err, data)=>{
+            const query="INSERT INTO capstone_design.profile(member_id, profile_src) VALUES(?, ?)";
+            db.query(query, [id, profile] ,(err, data)=>{
                 if(err) reject(err);
                 else {
-                    console.log("좋아요 저장 성공");
+                    console.log("프로필 저장 성공");
                     resolve({success : true});
                 }
             });

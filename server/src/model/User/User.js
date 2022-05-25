@@ -44,14 +44,17 @@ class User{
                     console.log("1 : "+accessToken+", 2 : "+refreshToken);
 
                     //const res=await UserStorage.saveToken(user.member_id, refreshToken); //test 할 때만 실제로는 주석 지우기
-                    
+                    let lastDate;
+                    let isFirst;
                     const now=new Date(+new Date()+3240*10000).toISOString().split("T")[0];
                     const QA=(await QAStorage.getQA(user.member_id, 'ORDER BY qa_date DESC limit 0,1'))[0];
-                    const lastDate=QA.qa_date;
-                    let isFirst;
+
+                    if(QA==undefined) lastDate=null;
+                    else lastDate=QA.qa_date;
+                
                     console.log("==============\n",now, lastDate);
                     if(now==lastDate) isFirst=false;
-                    else isFirst=true;
+                    else if((now!=lastDate) || (lastDate==null)) isFirst=true;
 
                     const userInfo=await UserStorage.getUserInfo(user.member_id);
                     const nickname=userInfo.nickname;
@@ -84,7 +87,10 @@ class User{
 
     async register(){
         try{
+            //let success;
+            console.log(this.body);
             const res=await UserStorage.saveUserInfo(this.body);
+            if(res.success==true) await ProfileStorage.saveProfile(this.body.id, null);
             return res;
 
         }catch(err){
