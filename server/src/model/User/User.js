@@ -44,11 +44,12 @@ class User{
                     console.log("1 : "+accessToken+", 2 : "+refreshToken);
 
                     //const res=await UserStorage.saveToken(user.member_id, refreshToken); //test 할 때만 실제로는 주석 지우기
-                    const now=new Date().toISOString().slice(0,10);
+                    
+                    const now=new Date(+new Date()+3240*10000).toISOString().split("T")[0];
                     const QA=(await QAStorage.getQA(user.member_id, 'ORDER BY qa_date DESC limit 0,1'))[0];
                     const lastDate=QA.qa_date;
                     let isFirst;
-
+                    console.log("==============\n",now, lastDate);
                     if(now==lastDate) isFirst=false;
                     else isFirst=true;
 
