@@ -19,7 +19,7 @@ class Board{
            
             where="ORDER BY board_post_date DESC";
             const latest_diary=await BoardStorage.getBoard(where);
-            console.log(latest_diary);
+            //console.log(latest_diary);
             return latest_diary;
 
         }catch(err){
@@ -42,31 +42,45 @@ class Board{
     
     async getBoard(){
         try{
-            let where="WHERE diary_no="+this.req.query.no;
+            console.log(this.req.query.no);
+            let where="WHERE member_id=? AND diary_no="+this.req.query.no;
             let is_shared;
             let is_liked;
 
-            const board=(await BoardStorage.getBoard(where, this.req.userId))[0].board_no;
+            
+            const {diary_no, content, image_url, like_count, date, member_id, shared}=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+            const writer_nickname=(await UserStorage.getUserInfo(member_id)).nickname;
+            const writer_profile_url=(await ProfileStorage.getProfile(member_id))[0].profile_src; //test 때만
+
+            console.log(diary_no, content, image_url, like_count, date, member_id, shared , writer_nickname , writer_profile_url);
+
+            where="WHERE diary_no="+this.req.query.no;
+            const board=(await BoardStorage.getBoard(where, this.req.userId))[0];
+            let no;
             console.log(board);
-            const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
-            const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
-            const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
-            console.log(board_no, diary_no, content, image_url, like_count, date, writer_id );
+            if(board!=undefined){
+                no=board.board_no;
+                console.log(no);
+                where="WHERE board_no=? AND member_id=?"
+                const is_scrap=await ScrapStorage.getScrap(no, this.req.userId, where);
+                //console.log(is_scrap);
+                if(is_scrap.length!=0) is_shared=true;
+                else is_shared=false;
 
-            where="WHERE board_no=? AND member_id=?"
-            const is_scrap=await ScrapStorage.getScrap(board, this.req.userId, where);
-            console.log(is_scrap);
-            if(is_scrap.length!=0) is_shared=true;
-            else is_shared=false;
+                const is_like=await LikeStorage.getLike(no, this.req.userId);
+                //console.log(is_like);
+                if(is_like.length!=0) is_liked=true;
+                else is_liked=false;
+            }
 
-            const is_like=await LikeStorage.getLike(board, this.req.userId);
-            console.log(is_like);
-            if(is_like.length!=0) is_liked=true;
-            else is_liked=false;
+            else{
+                is_shared=false;
+                is_liked=false;
+            }
 
-            const selected={diary_no, content, image_url, like_count, date, writer_id, writer_nickname, writer_profile_url, is_liked, is_shared};
-            //console.log(diary_no, content, image_url, like_count, date, board_writer, writer_nickname, writer_profile_url, selected);
+            const selected={diary_no, content, image_url, like_count, date, writer_id : member_id, writer_nickname, writer_profile_url, is_liked, is_shared};
+            console.log(selected);
             return selected;
 
         }catch(err){

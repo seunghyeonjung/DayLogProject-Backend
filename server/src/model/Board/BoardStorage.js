@@ -7,8 +7,8 @@ class BoardStorage{
     static getBoard(where, id){
         return new Promise((resolve, reject)=>{
             console.log("조회 시작")
-            const query="SELECT board_no, board_no as diary_no, board_content as content, board_image as image_url, board_like_count as like_count, board_post_date as date, diary_no, board_writer as writer_id, DATE_FORMAT(board_post_date,'%Y-%m-%d') AS date FROM capstone_design.board " + where;
-            //console.log(query);
+            const query="SELECT board_no, diary_no, board_content as content, board_image as image_url, board_like_count as like_count, board_post_date as date, diary_no, board_writer as writer_id, DATE_FORMAT(board_post_date,'%Y-%m-%d') AS date FROM capstone_design.board " + where;
+            console.log(query);
             db.query(query ,[id], (err, data)=>{
                 if(err) {
                     console.log("조회 실패", err);
