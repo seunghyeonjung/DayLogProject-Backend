@@ -3,11 +3,11 @@
 const db=require("../../config/db");
 
 
-class ProfileStorage{//프로필 왜 안 가지..
+class ProfileStorage{
     static getProfile(id){
         return new Promise((resolve, reject)=>{
             console.log("프로필 조회 시작");
-            const query="SELECT if(profile_src!=null, (CONCAT('http://localhost:3001/profiles/', profile_src)), null) as profile_src, member_id FROM capstone_design.profile WHERE member_id=?";
+            const query="SELECT if(isnull(profile_src), null, CONCAT('http://localhost:3001/profiles/', profile_src)) as profile_src, member_id FROM capstone_design.profile WHERE member_id=?";
             console.log(query);
             db.query(query, [id], (err, data)=>{
                 if(err) {
