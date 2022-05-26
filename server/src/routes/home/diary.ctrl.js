@@ -14,8 +14,9 @@ const process={
     saveDiary : async function(request, response){
         const diary=new Diary(request);
         const month_diaries=await diary.saveDiary();
-        //console.log(month_diaries);
-        return response.json(month_diaries);
+        console.log(month_diaries);
+        if(month_diaries.success) return response.json(month_diaries);
+        else return response.status(month_diaries.status).send({message : "동일한 날짜에 일기가 있습니다"});
     },
 
     saveImage : async function(request, response){
@@ -23,7 +24,7 @@ const process={
         const res=await diary.saveImage();
         console.log(res);
         if(res.success==true) return response.send({message : true});
-        else return response.status(400).send({message : "데이터베이스 저장 실패"});
+        else return response.status(401).send({message : "데이터베이스 저장 실패"});
         
     },
 

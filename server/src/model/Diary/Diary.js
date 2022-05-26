@@ -91,6 +91,11 @@ class Diary{
             console.log(year, month, last_day);
             console.log("Diary : "+this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share, image);
 
+            where="WHERE member_id=? AND diary_date="+"'"+this.req.body.date+"'";
+            const exist=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+            console.log(exist)
+            if(exist!=undefined) return {success : false, status : 401};
+
             const res=await DiaryStorage.saveDiary(this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share, image);
 
             where="WHERE member_id=? ORDER BY diary_no DESC limit 0,1";
@@ -111,7 +116,7 @@ class Diary{
                 where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
                 current_diary=await DiaryStorage.getDiary(this.req.userId, where);
                 
-                return {month_diary, current_diary};
+                return {success : true, month_diary, current_diary};
             }
             return res;
 
@@ -252,7 +257,7 @@ class Diary{
                     where="WHERE board_writer=? AND diary_no="+index;
                     const like=(await BoardStorage.getBoard(where, this.req.userId))[0].like_count;
 
-                    await DiaryStorage.modifyLike(like, index);
+                    //await DiaryStorage.modifyLike(like, index);
                     await BoardStorage.removeBoard(index);
                 }
 

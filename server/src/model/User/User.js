@@ -49,7 +49,7 @@ class User{
                     let lastDate;
                     let isFirst;
                     const now=new Date(+new Date()+3240*10000).toISOString().split("T")[0];
-                    const QA=(await QAStorage.getQA(user.member_id, 'ORDER BY qa_date DESC limit 0,1'))[0];
+                    const QA=(await QAStorage.getQA(user.member_id))[0];
                     console.log(QA);
                     if(QA==undefined) lastDate=null;
                     else {

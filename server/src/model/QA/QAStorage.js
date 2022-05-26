@@ -23,7 +23,7 @@ class QAStorage {
             db.query(`SELECT qa_date as date, qa_choice as choice
                         FROM capstone_design.qa 
                         WHERE member_id=? 
-                        AND (qa_date between date_add(NOW(), INTERVAL -1 MONTH) AND NOW());`,[id], function(err, qalist){
+                        AND (qa_date between date_add(NOW(), INTERVAL -1 MONTH) AND NOW()) ORDER BY date DESC`,[id], function(err, qalist){
 
                 
                 if(err) reject(err);

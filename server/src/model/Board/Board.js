@@ -171,7 +171,7 @@ class Board{
         }
     }
 
-    async modifyLike(){ //좋아요 누르면 바로 diary storage에도 저장..
+    async modifyLike(){
         try{
             let where;
             let set;
@@ -198,6 +198,7 @@ class Board{
                 if(mes.success==true){
                     where="WHERE board_no="+no;
                     const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    await DiaryStorage.modifyLike(like_count, this.req.query.no);
                     const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
@@ -217,6 +218,7 @@ class Board{
                 if(mes.success==true){
                     where="WHERE board_no="+no;
                     const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    await DiaryStorage.modifyLike(like_count, this.req.query.no);
                     const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
