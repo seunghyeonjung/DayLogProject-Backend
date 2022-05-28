@@ -13,7 +13,12 @@ class QAStorage {
             const query1="INSERT INTO capstone_design.qa(member_id, qa_date, qa_choice) VALUES(?,?,?)";
             db.query(query1, [id, date, index] ,(err)=>{
                 if(err) reject(err);
-                else resolve({success : true});
+                else {
+                    //기록하고 카운트하기 성공..... 
+                    const query4 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                    db.query(query4, [id, 8]);
+
+                    resolve({success : true});}
             });
         })
     }

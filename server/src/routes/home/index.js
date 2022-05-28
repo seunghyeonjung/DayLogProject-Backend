@@ -6,9 +6,10 @@
 const express=require("express");
 const router=express.Router();
 
-const sharp=require("sharp");
+//const sharp=require("sharp");
 const fs=require("fs");
 const multer=require('multer');
+//const path=require('path');
 const storage=multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, './src/databases/images')
@@ -24,7 +25,7 @@ const _storage=multer.diskStorage({
         cb(null, './src/databases/profiles')
     },
     filename: function(req, file, cb){
-        cb(null, file.filename+'-'+Date.now())
+        cb(null, Date.now()+'_'+file.originalname);
     }
 });
 
@@ -45,7 +46,7 @@ const fileFilter=(req, file, cb)=>{
 }
 
 const diary_upload=multer({storage:storage, fileFilter:fileFilter}).single('image');
-const profile_upload=multer({storage:_storage, fileFilter:fileFilter});
+const profile_upload=multer({storage:_storage, fileFilter:fileFilter}).single('image');
 let image;
 
 
@@ -61,15 +62,48 @@ const board_ctrl=require("./board.ctrl");
 const badge_ctrl=require("./badge.ctrl");
 
 const qa_ctrl=require("./qa.ctrl");
-
+//const profiles=require("../../databases/profiles");
 //router.get("/", user_ctrl.output.hello);
 //router.get("/login", user_ctrl.output.login);
 router.post("/members/login", user_ctrl.process.login); //로그인
-//router.delete("/members/logout", checkToken.auth.check, user_ctrl.process.logout);//로그아웃
-router.delete("/members/logout", user_ctrl.process.logout); //logout test 때만 사용
+router.delete("/members/logout", checkToken.auth.check, user_ctrl.process.logout);//로그아웃
+//router.delete("/members/logout", user_ctrl.process.logout); //logout test 때만 사용
 router.post("/members/new", user_ctrl.process.register); //회원가입
 router.post("/members/idCheck", user_ctrl.process.idCheck); //아이디 중복 체크
-//router.delete("/members/logout", user_ctrl.process.logout);
+router.delete("/members", checkToken.auth.check, user_ctrl.process.removeMember);
+router.post("/members/pw", checkToken.auth.check, user_ctrl.process.changePW);
+router.post("/members/profile",checkToken.auth.check, user_ctrl.process.getProfile, function(req, res, next){
+    console.log("index",req.profile);
+    if(fs.existsSync("./src/databases"+req.profile)){
+        try{
+            fs.unlinkSync("./src/databases"+req.profile);
+            console.log("이미지 삭제");
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+    else console.log("실패...");
+
+    profile_upload(req, res, function(err){
+        console.log(req.file);
+        console.log(req.file.path);
+        if(req.fileValidationError!=null){
+            console.log(req.fileValidationError);
+            return res.status(400).send(req.fileValidationError);
+        }
+        if(err) {
+            console.log(err);
+            return res.status(400).send({message : err});
+        }
+        else{ 
+            console.log("ok", req.file.filename, req.file.path);
+            image=req.file.filename;
+            next();        
+        }
+    })
+}, user_ctrl.process.modifyProfile);
+router.post("/members/name",checkToken.auth.check, user_ctrl.process.modifyUser);
 
 //토큰 관련
 router.get('/check', checkToken.auth.check);
