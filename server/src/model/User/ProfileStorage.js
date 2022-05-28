@@ -35,6 +35,20 @@ class ProfileStorage{
         });
     }
 
+    static modifyProfile(id, profile){
+        return new Promise((resolve, reject)=>{
+            const query="UPDATE capstone_design.profile SET profile_src=? WHERE member_id=?";
+            db.query(query, [profile, id] ,(err, data)=>{
+                if(err) reject(err);
+                else {
+                    console.log("프로필 변경 성공");
+                    resolve({success : true});
+                }
+            });
+        });
+    }
+
+
     static removeProfile(id, no){
         return new Promise((resolve, reject)=>{
             const query="DELETE FROM capstone_design.like WHERE member_id=? AND board_no=?";

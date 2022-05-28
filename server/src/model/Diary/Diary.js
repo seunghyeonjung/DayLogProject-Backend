@@ -2,6 +2,7 @@
 
 const DiaryStorage=require("./DiaryStorage");
 const BoardStorage=require("../Board/BoardStorage");
+const fs=require("fs");
 //const moment=require('moment');
 //const { KEYBCS2_BIN } = require("mysql/lib/protocol/constants/charsets");
 
@@ -158,7 +159,9 @@ class Diary{
             let month_diary=[];
             let current_diary=[];
             let where="WHERE member_id=? AND diary_no="+index;
-            const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
+            const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+            const diary_url=diary.image_url.split(":3001")[1];
+            const date=diary.date;
             const year=date.substring(0,4);
             const month=date.substring(5,7);
             const last_day=getDay(year, month);
@@ -166,6 +169,16 @@ class Diary{
             console.log(year, month, last_day);
 
             const res=await DiaryStorage.removeDiary(index);
+
+            if(fs.existsSync("./src/databases"+diary_url)){
+                try{
+                    fs.unlinkSync("./src/databases"+diary_url);
+                    console.log("이미지 삭제");
+                }
+                catch(err){
+                    console.log(err)
+                }
+            }
 
             if(res.success==true){
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
@@ -184,7 +197,7 @@ class Diary{
         }
     }
 
-    async modifyDiary(){
+    async modifyDiary(){//프로필 변경이랑 동일하게
         try{
             const index=this.req.query.no;
             let month_diary=[];
@@ -210,7 +223,7 @@ class Diary{
             return res;
 
         }catch(err){
-            return { success : false, message : err}
+            return { success : false, message : err};
         }
     }
 

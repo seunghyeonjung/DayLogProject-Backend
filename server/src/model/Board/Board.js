@@ -260,8 +260,8 @@ class Board{
                 if(mes.success==true){
                     where="WHERE board_no="+no;
                     const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
-                    const writer_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
-                    const writer_profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
+                    const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
+                    const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
                     const selected={diary_no, content, image_url, like_count, date, writer_id, writer_nickname, writer_profile_url, is_liked, is_shared};
 
@@ -278,8 +278,8 @@ class Board{
                 if(mes.success==true){
                     where="WHERE board_no="+no;
                     const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
-                    const writer_nickname=(await UserStorage.getUserInfo(this.req.userId)).nickname;
-                    const writer_profile_url=(await ProfileStorage.getProfile(this.req.userId))[0].profile_src; //test 때만
+                    const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
+                    const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
 
                     const selected={diary_no, content, image_url, like_count, date, writer_id, writer_nickname, writer_profile_url, is_liked, is_shared};
 

@@ -25,7 +25,7 @@ const process={
 
     logout : async function(request, response){
         //request.userId="test123"; //실제 test 시 주석
-        const user=new User(request.userId); 
+        const user=new User(request); 
         const res=await user.logout();
         console.log(res);
         response.clearCookie("refreshToken").send();
@@ -43,7 +43,48 @@ const process={
         const res=await user.idCheck();
         console.log(res);
         return response.json(res);
-    }
+    },
+
+    removeMember : async function(request, response){
+        const user=new User(request);
+        const res=await user.removeMember();
+        console.log(res);
+        if(res.result=="SUCCESS") return response.send({result : res.result});
+        else return response.status(401).json({result : res.result, message : res.message});
+    },
+
+    changePW : async function(request, response){
+        const user=new User(request);
+        const res=await user.changePW();
+        console.log(res);
+        if(res.result=="SUCCESS") return response.send({result : res.result, message : res.message});
+        else return response.status(401).json({result : res.result, message : res.message});
+    },
+
+    getProfile : async function(request, response, next){
+        const user=new User(request);
+        const res=await user.getProfile();
+        console.log(res);
+        request.profile=res;
+        next();
+    }, 
+
+    modifyProfile : async function(request, response){
+        console.log(request.file.filename);
+        const user=new User(request);
+        const res=await user.modifyProfile();
+        console.log(res);
+        if(res.result=="SUCCESS") return response.send(res);
+        else return response.status(401).send(res);
+    },
+
+    modifyUser : async function(request, response){
+        const user=new User(request);
+        const res=await user.modifyUser();
+        console.log(res);
+        if(res.result=="SUCCESS") return response.send(res);
+        else return response.status(401).send(res);
+    },
 }
 
 //hello: hello와 동일하게 저장된 것

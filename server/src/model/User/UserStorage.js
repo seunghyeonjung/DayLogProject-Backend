@@ -12,6 +12,7 @@ class UserStorage{
     static getUserInfo(id){
         return new Promise((resolve, reject)=>{
             const query="SELECT * FROM capstone_design.member WHERE member_id=?";
+            console.log(query);
             db.query(query, [id] ,(err, data)=>{
                 if(err) {
                     console.log(err.message);
@@ -59,6 +60,25 @@ class UserStorage{
         return new Promise((resolve, reject)=>{
             const query="DELETE FROM capstone_design.tokens WHERE member_id=?";
             db.query(query, [id] ,(err)=>{
+                if(err) reject(err);
+                else resolve({success : true});
+            });
+        })
+    }
+    
+    static removeUserInfo(query){
+        return new Promise((resolve, reject)=>{
+            db.query(query, (err)=>{
+                if(err) reject(err);
+                else resolve({success : true});
+            });
+        })
+    }
+
+    static modifyUserInfo(id, pw, email, name, nickname){
+        return new Promise((resolve, reject)=>{
+            const query="UPDATE capstone_design.member SET member_id=?, pw=?, email=?, name=?, nickname=? WHERE member_id=?";
+            db.query(query, [id, pw, email, name, nickname, id], (err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
             });
