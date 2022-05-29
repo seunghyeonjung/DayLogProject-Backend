@@ -59,10 +59,10 @@ class DiaryStorage{
         });
     }
 
-    static modifyDiary(index, id, content, date, image, emotion, share){
+    static modifyDiary(index, id, content, date, emotion, share){
         return new Promise((resolve, reject)=>{
-            const query="UPDATE capstone_design.diary SET diary_content=?, diary_date=?, diary_image=?, emotion=?, share_y_n=? WHERE diary_no=?";
-            db.query(query, [content, date, image, emotion, share, index] ,(err)=>{
+            const query="UPDATE capstone_design.diary SET diary_content=?, diary_date=?, emotion=?, share_y_n=? WHERE member_id=? AND diary_no=?";
+            db.query(query, [content, date, emotion, share, id, index] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
             });
