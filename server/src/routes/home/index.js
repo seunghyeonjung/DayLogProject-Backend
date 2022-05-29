@@ -128,20 +128,39 @@ router.delete("/schedule",checkToken.auth.check, schedule_ctrl.process.removeSch
 router.get("/diary", checkToken.auth.check, diary_ctrl.process.getDiary);
 router.get("/diary/calendar", checkToken.auth.check, diary_ctrl.process.getDiary);
 router.get("/diary/share", checkToken.auth.check, diary_ctrl.process.modifyShare);
-router.put("/diary", checkToken.auth.check, diary_ctrl.process.modifyDiary);
+router.post("/diary/change", checkToken.auth.check, diary_ctrl.process.modifyDiary);
 router.post("/diary", checkToken.auth.check, diary_ctrl.process.saveDiary);
 router.delete("/diary",checkToken.auth.check, diary_ctrl.process.removeDiary);
+router.post("/diary/image/change",checkToken.auth.check, function(req, res, next){
+    diary_upload(req, res, function(err){
+        console.log(req.file);
+        console.log(req.file.path);
+        if(req.fileValidationError!=null){
+            console.log(req.fileValidationError);
+            return res.status(401).send(req.fileValidationError);
+        }
+        if(err) {
+            console.log(err);
+            return res.status(401).send({message : err});
+        }
+        else{
+            console.log("ok", req.file.filename, req.file.path);
+            image=req.file.filename;
+            next();
+        }
+    })
+},diary_ctrl.process.modifyImage);
 router.post("/diary/image",checkToken.auth.check, function(req, res, next){
     diary_upload(req, res, function(err){
         console.log(req.file);
         console.log(req.file.path);
         if(req.fileValidationError!=null){
             console.log(req.fileValidationError);
-            return res.status(400).send(req.fileValidationError);
+            return res.status(401).send(req.fileValidationError);
         }
         if(err) {
             console.log(err);
-            return res.status(400).send({message : err});
+            return res.status(401).send({message : err});
         }
         else{
             console.log("ok", req.file.filename, req.file.path);

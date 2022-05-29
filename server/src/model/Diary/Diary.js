@@ -153,6 +153,43 @@ class Diary{
         }
     }
 
+    async modifyImage(){
+        try{
+            let res;
+            let where="WHERE member_id=? AND diary_no="+this.req.query.no;
+            const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+            console.log(diary);
+            console.log(diary.image_url);
+
+            if(diary.image_url==null){
+                res=await DiaryStorage.saveImage(this.req.userId, this.req.file.filename, this.req.query.no);
+                console.log("수정 이미지 저장하기")
+            }
+
+            else{
+                const image=diary.image_url.split(":3001")[1];
+                
+                if(fs.existsSync("./src/databases"+image)){
+                    try{
+                        fs.unlinkSync("./src/databases"+image);
+                        console.log("일기 이미지 삭제");
+                    }
+                    catch(err){
+                        console.log(err)
+                    }
+                }
+
+                res=await DiaryStorage.saveImage(this.req.userId, this.req.file.filename, this.req.query.no);
+            }
+
+            if(res.success==true) return {success : true};
+            else return {success : false};
+
+        }catch(err){
+            return { success : false, message : err}
+        }
+    }
+
     async removeDiary(){//삭제 시 이미지도
         try{
             const index=this.req.query.no;
@@ -208,9 +245,30 @@ class Diary{
             const month=date.substring(5,7);
             const last_day=getDay(year, month);
 
-            const res=await DiaryStorage.modifyDiary(index, this.req.userId, this.req.body.content, this.req.body.date, this.req.body.image, this.req.body.emotion, this.req.body.share);
+            const res=await DiaryStorage.modifyDiary(index, this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share);
 
             if(res.success==true){
+                const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+                const share=diary.shared;
+                const content=diary.content;
+                const image=diary.image_url;
+                const like=diary.like_count;
+                console.log(share, content, image, like, date);
+
+                if(share=='true'){
+                    console.log("공유 변경으로 인한 추가");
+                    await BoardStorage.saveBoard(this.req.userId, index, content, this.req.body.date, image, like);
+                }
+
+                else if(share=='false'){
+                    console.log("공유 변경으로 인한 삭제");
+                    where="WHERE board_writer=? AND diary_no="+index;
+                    //const like=(await BoardStorage.getBoard(where, this.req.userId))[0].like_count;
+
+                    //await DiaryStorage.modifyLike(like, index);
+                    await BoardStorage.removeBoard(index);
+                }
+
                 where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
                 month_diary=await await DiaryStorage.getDiary(this.req.userId, where);
 
@@ -254,7 +312,7 @@ class Diary{
             if(res.success==true){
                 shared=(await DiaryStorage.getDiary(this.req.userId, where))[0].shared;
                 const content=(await DiaryStorage.getDiary(this.req.userId, where))[0].content;
-                const image=(await DiaryStorage.getDiary(this.req.userId, where))[0].image;
+                const image=(await DiaryStorage.getDiary(this.req.userId, where))[0].image_url;
                 const like=(await DiaryStorage.getDiary(this.req.userId, where))[0].like_count;
                 console.log(shared, content, image, like);
 
@@ -268,7 +326,7 @@ class Diary{
                 else if(shared=='false'){
                     console.log("공유 변경으로 인한 삭제");
                     where="WHERE board_writer=? AND diary_no="+index;
-                    const like=(await BoardStorage.getBoard(where, this.req.userId))[0].like_count;
+                    //const like=(await BoardStorage.getBoard(where, this.req.userId))[0].like_count;
 
                     //await DiaryStorage.modifyLike(like, index);
                     await BoardStorage.removeBoard(index);

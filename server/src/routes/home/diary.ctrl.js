@@ -42,6 +42,14 @@ const process={
         return response.json(month_diaries);
     },
 
+    modifyImage : async function(request, response){
+        const diary=new Diary(request);
+        const res=await diary.modifyImage();
+        console.log(res);
+        if(res.success==true) response.json({message : true});
+        return response.status(401);
+    },
+
     modifyShare : async function(request, response){
         const diary=new Diary(request);
         const month_diaries=await diary.modifyShare();
