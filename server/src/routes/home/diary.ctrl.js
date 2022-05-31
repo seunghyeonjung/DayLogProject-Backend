@@ -37,9 +37,9 @@ const process={
 
     modifyDiary : async function(request, response){
         const diary=new Diary(request);
-        const month_diaries=await diary.modifyDiary();
-        console.log(month_diaries);
-        return response.json(month_diaries);
+        const edited_diary=await diary.modifyDiary();
+        console.log(edited_diary);
+        return response.json(edited_diary);
     },
 
     modifyImage : async function(request, response){
