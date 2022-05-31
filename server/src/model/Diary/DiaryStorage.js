@@ -20,7 +20,19 @@ class DiaryStorage{
             const query="INSERT INTO capstone_design.diary(member_id, diary_content, diary_date, emotion, share_y_n, diary_image) VALUES(?, ?, ?, ?, ?, ?)";
             db.query(query, [id, content, date, emotion, share, image] ,(err, data)=>{
                 if(err) reject(err);
-                else resolve({success : true});
+                else {
+                    //기록하고 카운트하기 성공..... 
+                    const query4 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                    db.query(query4, [id, 1]);
+
+                    const query5 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                    db.query(query5, [id, 2]);
+
+                    const query6 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                    db.query(query6, [id, 3]);
+
+                    resolve({success : true});
+                }
             });
         });
     }
@@ -31,20 +43,7 @@ class DiaryStorage{
             const query="UPDATE capstone_design.diary SET diary_image=? WHERE member_id=? and diary_no=?";
             db.query(query, [image, id, no] ,(err, data)=>{
                 if(err) reject(err);
-                else {
-                    //기록하고 카운트하기 성공..... 
-                const query4 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
-                db.query(query4, [id, 1]);
-
-                const query5 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
-                db.query(query5, [id, 2]);
-
-                const query6 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
-                db.query(query6, [id, 3]);
- 
-                    
-                resolve({success : true});
-            }
+                else resolve({success : true});
             });
         });
     }
