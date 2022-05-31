@@ -237,8 +237,6 @@ class Diary{
     async modifyDiary(){//프로필 변경이랑 동일하게
         try{
             const index=this.req.query.no;
-            let month_diary=[];
-            let current_diary=[];
             let where="WHERE member_id=? AND diary_no="+index;
             const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
             const year=date.substring(0,4);
@@ -269,14 +267,9 @@ class Diary{
                     await BoardStorage.removeBoard(index);
                 }
 
-                where="WHERE member_id=? AND (DATE(diary_date) BETWEEN '"+year+"-"+month+"-01' AND '"+year+"-"+month+"-"+last_day+"') ORDER BY diary_date ASC";
-                month_diary=await await DiaryStorage.getDiary(this.req.userId, where);
-
-                where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
-                current_diary=await DiaryStorage.getDiary(this.req.userId, where);
                 
-                if(month_diary.length==0) return {message : "EMPTY"}           
-                else return {message : "FILL", month_diary, current_diary};
+                
+                return {edited_diary : diary};
             }
             return res;
 
