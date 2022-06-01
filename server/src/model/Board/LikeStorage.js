@@ -31,7 +31,6 @@ class LikeStorage{
                     console.log("좋아요 저장 성공");
                     
                     //좋아요누르기 내가 누른거니까 id로 뱃지+1
-                    console.log(id, no, "--------------");
                     const query10 = "UPDATE capston_design.memberbadge SET goal_count = capston_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
                     db.query(query10, [id, 10]);
 
