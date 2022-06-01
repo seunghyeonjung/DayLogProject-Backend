@@ -7,7 +7,7 @@ class LikeStorage{
     static getLike(no, id){
         return new Promise((resolve, reject)=>{
             console.log("좋아요 조회 시작");
-            const query="SELECT * FROM asas.like WHERE board_no=? AND member_id=?";
+            const query="SELECT * FROM capstone_design.like WHERE board_no=? AND member_id=?";
             console.log(query);
             db.query(query, [no, id], (err, data)=>{
                 if(err) {
@@ -24,22 +24,22 @@ class LikeStorage{
 
     static saveLike(id, no){
         return new Promise((resolve, reject)=>{
-            const query="INSERT INTO asas.like(board_no, member_id) VALUES(?, ?)";
+            const query="INSERT INTO capstone_design.like(board_no, member_id) VALUES(?, ?)";
             db.query(query, [no, id] ,(err, data)=>{
                 if(err) reject(err);
                 else {
                     console.log("좋아요 저장 성공");
                     
                     //좋아요누르기 내가 누른거니까 id로 뱃지+1
-                    const query10 = "UPDATE asas.memberbadge SET goal_count = asas.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                    const query10 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
                     db.query(query10, [id, 10]);
 
-                    db.query(`SELECT board_writer FROM asas.board WHERE board_no=?`,[no], function(err, bw){
+                    db.query(`SELECT board_writer FROM capstone_design.board WHERE board_no=?`,[no], function(err, bw){
 
                         //좋아요받기 보드번호로 상대 id 찾아서 그 상대 뱃지 +1
-                        const query11 = "UPDATE asas.memberbadge SET goal_count = asas.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                        const query11 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
                         db.query(query11, [bw[0].board_writer, 11]);
-                        const query12 = "UPDATE asas.memberbadge SET goal_count = asas.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+                        const query12 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
                         db.query(query12, [bw[0].board_writer, 12]);
                        
                     })
@@ -53,7 +53,7 @@ class LikeStorage{
 
     static removeLike(id, no){
         return new Promise((resolve, reject)=>{
-            const query="DELETE FROM asas.like WHERE member_id=? AND board_no=?";
+            const query="DELETE FROM capstone_design.like WHERE member_id=? AND board_no=?";
             db.query(query, [id, no] ,(err, data)=>{
                 if(err) reject(err);
                 else {
@@ -66,7 +66,7 @@ class LikeStorage{
 /*
     static maxLike(id){
         return new Promise((resolve, reject)=>{
-            const query="SELECT MAX(borad_like_count) as like FROM asas.board WHERE member_id=? ";
+            const query="SELECT MAX(borad_like_count) as like FROM capstone_design.board WHERE member_id=? ";
             db.query(query, [id] ,(err, data)=>{
                 if(err) reject(err);
                 else {
