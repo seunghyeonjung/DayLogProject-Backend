@@ -28,7 +28,7 @@ static Info(){
         description : "일정 1번 기록하기", final_count : 1};
 
         let h = { Badge_no : 8 , badge_name : "환영합니다",
-        description : "처음 출석하기", final_count : 5};
+        description : "출석 5번 하기", final_count : 5};
 
         let i = { Badge_no : 9 , badge_name : "기록은 즐거워",
         description : "30일 출석", final_count : 30};

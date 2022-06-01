@@ -7,7 +7,7 @@ class BoardStorage{
     static getBoard(where, id){
         return new Promise((resolve, reject)=>{
             console.log("조회 시작")
-            const query="SELECT board_no, diary_no, board_content as content, board_image as image_url, board_like_count as like_count, board_post_date as date, diary_no, board_writer as writer_id, DATE_FORMAT(board_post_date,'%Y-%m-%d') AS date FROM capston_design.board " + where;
+            const query="SELECT board_no, diary_no, board_content as content, board_image as image_url, board_like_count as like_count, board_post_date as date, diary_no, board_writer as writer_id, DATE_FORMAT(board_post_date,'%Y-%m-%d') AS date FROM capstone_design.board " + where;
             console.log(query);
             db.query(query ,[id], (err, data)=>{
                 if(err) {
@@ -24,7 +24,7 @@ class BoardStorage{
 
     static saveBoard(id, no, content, date, image, like){
         return new Promise((resolve, reject)=>{
-            const query="INSERT INTO capston_design.board(board_writer, diary_no, board_content, board_post_date, board_image, board_like_count) VALUES(?, ?, ?, ?, ?, ?)";
+            const query="INSERT INTO capstone_design.board(board_writer, diary_no, board_content, board_post_date, board_image, board_like_count) VALUES(?, ?, ?, ?, ?, ?)";
             db.query(query, [id, no, content, date, image, like] ,(err, data)=>{
                 if(err) reject(err);
                 else {
@@ -37,7 +37,7 @@ class BoardStorage{
 
     static removeBoard(index){
         return new Promise((resolve, reject)=>{
-            const query="DELETE FROM capston_design.board WHERE diary_no=?";
+            const query="DELETE FROM capstone_design.board WHERE diary_no=?";
             db.query(query, [index] ,(err, data)=>{
                 if(err) reject(err);
                 else {
@@ -50,7 +50,7 @@ class BoardStorage{
 
     static modifyLike(set, no){
         return new Promise((resolve, reject)=>{
-            const query="UPDATE capston_design.board SET board_like_count="+set+" WHERE board_no=?";
+            const query="UPDATE capstone_design.board SET board_like_count="+set+" WHERE board_no=?";
             db.query(query, [no] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
@@ -60,7 +60,7 @@ class BoardStorage{
 
     static modifyImage(image, no){
         return new Promise((resolve, reject)=>{
-            const query="UPDATE capston_design.board SET board_image=? WHERE diary_no=?";
+            const query="UPDATE capstone_design.board SET board_image=? WHERE diary_no=?";
             db.query(query, [image, no] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
