@@ -10,7 +10,7 @@ class MenstruationStorage {
         return new Promise((resolve, reject)=>{
             //console.log(id, start);
             //시작날짜 넣기
-            const query1="INSERT INTO capston_design.menstruationcycle(member_id, cycle_start_date) VALUES(?,?)";
+            const query1="INSERT INTO capstone_design.menstruationcycle(member_id, cycle_start_date) VALUES(?,?)";
             db.query(query1, [id, start] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
@@ -22,7 +22,7 @@ class MenstruationStorage {
     //주기 가져오는 쿼리
     static getCycle(id){
         return new Promise((resolve, reject)=>{
-            db.query(`SELECT menstruation_cycle as cycle FROM capston_design.member WHERE member_id=?`,[id], function(err, oldcycle){
+            db.query(`SELECT menstruation_cycle as cycle FROM capstone_design.member WHERE member_id=?`,[id], function(err, oldcycle){
                 
                 if(err) reject(err);
                     else {
@@ -39,7 +39,7 @@ class MenstruationStorage {
     static getStart(id){
         return new Promise((resolve, reject)=>{
             db.query(`SELECT type, DATE_FORMAT(cycle_start_date ,'%Y-%m-%d') as date 
-                        FROM capston_design.menstruationcycle 
+                        FROM capstone_design.menstruationcycle 
                         WHERE member_id=? 
                         order by cycle_start_date desc 
                         Limit 1`,[id], function(err, start){
@@ -54,7 +54,7 @@ class MenstruationStorage {
     static getAllStart(id){
             return new Promise((resolve, reject)=>{
                 db.query(`SELECT type, DATE_FORMAT(cycle_start_date ,'%Y-%m-%d') as date
-                            FROM capston_design.menstruationcycle 
+                            FROM capstone_design.menstruationcycle 
                             WHERE member_id=? 
                             order by cycle_start_date desc`
                             ,[id], function(err, start){
@@ -73,11 +73,11 @@ class MenstruationStorage {
     static saveCycle(id, cycle){
         return new Promise((resolve, reject)=>{
             //기존 주기 값 oldcycle 가져오는 쿼리문
-            db.query(`SELECT menstruation_cycle FROM capston_design.member WHERE member_id=?`,[id], function(err, oldcycle){
+            db.query(`SELECT menstruation_cycle FROM capstone_design.member WHERE member_id=?`,[id], function(err, oldcycle){
                 console.log(oldcycle);
 
                 //바꿔넣는쿼리문
-                    const query2="UPDATE capston_design.member SET menstruation_cycle=? WHERE member_id=?";   
+                    const query2="UPDATE capstone_design.member SET menstruation_cycle=? WHERE member_id=?";   
                     if(oldcycle === cycle || !cycle)
                         return oldcycle; //기존 주기와 같으면 넘어가고
                     else ( //다르면 바꿔 넣는 쿼리문

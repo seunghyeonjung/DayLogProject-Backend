@@ -195,9 +195,12 @@ class Diary{
             const index=this.req.query.no;
             let month_diary=[];
             let current_diary=[];
+            let diary_url=null;
             let where="WHERE member_id=? AND diary_no="+index;
             const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
-            const diary_url=diary.image_url.split(":3001")[1];
+            console.log("다이어리", diary, diary.image_url);
+            if(diary.image_url!=null) diary_url=diary.image_url.split(":3001")[1];
+            
             const date=diary.date;
             const year=date.substring(0,4);
             const month=date.substring(5,7);
