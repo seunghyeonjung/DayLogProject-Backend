@@ -17,7 +17,7 @@ function badgelist (Info, memberbadge, complete){
       dataList.push(data.challenge);
     };
 
-    for(let i = 0 ; i < 12 ; i++){
+    for(let i = 0 ; i < 15 ; i++){
 
         //달성했다면 골카운트 = 파이널카운트 //db에는 계속 상승하도록 해놓음
         if(memberbadge[i].goal_count >= Info[i].final_count ){
@@ -34,7 +34,7 @@ function badgelist (Info, memberbadge, complete){
 
         const item = { badge_no : Info[i].Badge_no ,
             badge_name : Info[i].badge_name ,
-            badge_url : null, // 이미지 나중에 구하기
+           // badge_url : Info[i].badge_url , // 이미지 나중에 구하기
             challenge : memberbadge[i].challenge, // true / flase : true이면 메인 화면에 출력?      
             goal_count : memberbadge[i].goal_count, //  14      
             final_count : Info[i].final_count, //  100      
@@ -63,7 +63,7 @@ class Badge{
             const memberbadge = await BadgeStorage.getBadge(this.body.userId); // 뱃지번호
             
 
-            for(let i = 0 ; i <12 ; i++){ //달성도 확인
+            for(let i = 0 ; i <15 ; i++){ //달성도 확인
                 if(Info[i].final_count <= memberbadge[i].goal_count){
                     let a = { is_complete : true}
                     complete.push(a)
@@ -122,7 +122,7 @@ class Badge{
             const memberbadge = await BadgeStorage.getBadge(this.body.userId); // 뱃지번호
             
 
-            for(let i = 0 ; i <12 ; i++){ //달성도 확인
+            for(let i = 0 ; i <15 ; i++){ //달성도 확인
                 if(Info[i].final_count <= memberbadge[i].goal_count){
                     let a = { is_complete : true}
                     complete.push(a)
@@ -153,7 +153,7 @@ class Badge{
             const Info = await BadgeInfo.Info(); // 뱃지번호
             const memberbadge = await BadgeStorage.getBadge(this.body.userId); // 뱃지번호
 
-            for(let i = 0 ; i <12 ; i++){ //달성도 확인
+            for(let i = 0 ; i <15 ; i++){ //달성도 확인
                 if(Info[i].final_count <= memberbadge[i].goal_count){
                     let a = { is_complete : true}
                     complete.push(a)
@@ -167,7 +167,7 @@ class Badge{
             const badges = new badgelist(Info, memberbadge, complete);
 
             let t=0;
-            for(let i = 0 ; i < 12 ; i++){
+            for(let i = 0 ; i < 15 ; i++){
 
 
                 if(badges.badges[i].challenge === true){
@@ -176,7 +176,7 @@ class Badge{
                 }
                 else{
                     t++;
-                    if(t===11){
+                    if(t===15){
                         let res = {is_present : false};
                         return res;
                     }
@@ -196,18 +196,6 @@ class Badge{
 
 
 module.exports=Badge;
-
-/*
-badges: [    
-{      
-badge_no,      badge_name,      img,      challenge, // true / flase : true이면 메인 화면에 출력?      
-
-goal_count, //  14      final_count, //  100      is_complete,      // true / false      description,   
-
- },
-
- // badge  ],
-*/
 
 
 

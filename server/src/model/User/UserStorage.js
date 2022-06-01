@@ -11,7 +11,7 @@ const db=require("../../config/db");
 class UserStorage{
     static getUserInfo(id){
         return new Promise((resolve, reject)=>{
-            const query="SELECT * FROM capstone_design.member WHERE member_id=?";
+            const query="SELECT * FROM capston_design.member WHERE member_id=?";
             console.log(query);
             db.query(query, [id] ,(err, data)=>{
                 if(err) {
@@ -28,7 +28,7 @@ class UserStorage{
 
     static getUserToken(id){
         return new Promise((resolve, reject)=>{
-            const query="SELECT token FROM capstone_design.tokens WHERE member_id=?";
+            const query="SELECT token FROM capston_design.tokens WHERE member_id=?";
             db.query(query, [id] ,(err, data)=>{
                 if(err) reject(err);
                 else resolve(data[0]);
@@ -38,7 +38,7 @@ class UserStorage{
 
     static saveUserInfo(userInfo){
         return new Promise((resolve, reject)=>{
-            const query="INSERT INTO capstone_design.member(member_id, pw, nickname, name, email) VALUES(?, ?, ? , ?, ?)";
+            const query="INSERT INTO capston_design.member(member_id, pw, nickname, name, email) VALUES(?, ?, ? , ?, ?)";
             db.query(query, [userInfo.id, userInfo.password, userInfo.nickname, userInfo.name, userInfo.email] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
@@ -48,7 +48,7 @@ class UserStorage{
 
     static saveToken(id, token){
         return new Promise((resolve, reject)=>{
-            const query="INSERT INTO capstone_design.tokens(member_id, token) VALUES(?, ?)";
+            const query="INSERT INTO capston_design.tokens(member_id, token) VALUES(?, ?)";
             db.query(query, [id, token] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true, msg : "save token"});
@@ -58,7 +58,7 @@ class UserStorage{
 
     static removeToken(id){
         return new Promise((resolve, reject)=>{
-            const query="DELETE FROM capstone_design.tokens WHERE member_id=?";
+            const query="DELETE FROM capston_design.tokens WHERE member_id=?";
             db.query(query, [id] ,(err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
@@ -77,7 +77,7 @@ class UserStorage{
 
     static modifyUserInfo(id, pw, email, name, nickname){
         return new Promise((resolve, reject)=>{
-            const query="UPDATE capstone_design.member SET member_id=?, pw=?, email=?, name=?, nickname=? WHERE member_id=?";
+            const query="UPDATE capston_design.member SET member_id=?, pw=?, email=?, name=?, nickname=? WHERE member_id=?";
             db.query(query, [id, pw, email, name, nickname, id], (err)=>{
                 if(err) reject(err);
                 else resolve({success : true});
