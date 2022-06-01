@@ -3,6 +3,10 @@
 const DiaryStorage=require("./DiaryStorage");
 const BoardStorage=require("../Board/BoardStorage");
 const fs=require("fs");
+
+//하트7개확인하기위한 뱃지스토리지
+const BadgeStorage=require("../Badge/BadgeStorage");
+
 //const moment=require('moment');
 //const { KEYBCS2_BIN } = require("mysql/lib/protocol/constants/charsets");
 
@@ -103,6 +107,50 @@ class Diary{
             const result=await DiaryStorage.getDiary(this.req.userId, where);
             const no=result[0].diary_no;
             console.log(result, no);
+
+            //다이어리 하트 7개되는지 확인하는 코드
+            //뱃지달성했다면 넘어가도록 짜야함
+            const condition = await BadgeStorage.getBadge(this.req.userId);
+            const all_emotion = await DiaryStorage.getall(this.req.userId);
+            if(condition[14].goal_count === 0){
+                let red=0;
+                let orange=0;
+                let yel=0;
+                let gre=0;
+                let blue=0;
+                let nav=0;
+                let pup=0;
+                for(let i = 0 ; i< all_emotion.length ; i++){
+                    if(all_emotion[i].emotion===1){
+                       red++;
+                    }
+                    if(all_emotion[i].emotion===2){
+                        orange++;
+                    }
+                    if(all_emotion[i].emotion===3){
+                       yel++;
+                    }
+                    if(all_emotion[i].emotion===4){
+                       gre++;
+                    }
+                    if(all_emotion[i].emotion===5){
+                        blue++;
+                    }
+                    if(all_emotion[i].emotion===6){
+                        nav++;
+                    }
+                    if(all_emotion[i].emotion===7){
+                        pup++;
+                    }
+                }
+
+                if(red===0 || orange===0 || yel===0 || gre===0|| blue===0|| nav===0|| pup===0){
+                    //하나라도 사용한적없다면 넘어가기
+                }
+                else{
+                    const save15 = await DiaryStorage.savebadge15(this.req.userId);
+                }
+            }
             
             if(res.success==true){
                 if(this.req.body.share===true){
