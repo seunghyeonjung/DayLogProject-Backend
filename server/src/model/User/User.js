@@ -99,7 +99,7 @@ class User{
             const res=await UserStorage.saveUserInfo(this.body);
             if(res.success==true) await ProfileStorage.saveProfile(this.body.id, null);
 
-            for(let i = 1 ; i < 13 ; i++ ){
+            for(let i = 1 ; i < 16 ; i++ ){
                 const num = await BadgeStorage.numBadge(i, this.body.id);
             }
 
