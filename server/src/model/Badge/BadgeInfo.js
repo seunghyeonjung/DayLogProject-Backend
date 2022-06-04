@@ -49,7 +49,7 @@ static Info(){
         description : "스크랩 30번 하기", final_count : 30};
 
         let o = { Badge_no : 15 , badge_name : "각양각색",
-        description : "모든 기분 저장하기", final_count : 30};
+        description : "모든 기분 저장하기", final_count : 1};
 
 
 

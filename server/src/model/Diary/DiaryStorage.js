@@ -90,6 +90,28 @@ class DiaryStorage{
             });
         });
     }
+
+    static getall(id){
+        return new Promise((resolve, reject)=>{
+            const query="SELECT emotion FROM capstone_design.diary WHERE member_id=?";
+            db.query(query, [id] ,(err, data)=>{
+                if(err) reject(err);
+                else resolve(data);
+            });
+        });
+    }
+
+    
+    static savebadge15(id){
+        return new Promise((resolve, reject)=>{
+
+            const query15 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
+            db.query(query15, [id, 15] ,(err, data)=>{
+                if(err) reject(err);
+                else resolve(data);
+            });
+        });
+    }
 }
 
 module.exports=DiaryStorage;
