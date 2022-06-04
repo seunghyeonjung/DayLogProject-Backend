@@ -31,21 +31,23 @@ class LikeStorage{
                     console.log("좋아요 저장 성공");
                     
                     //좋아요누르기 내가 누른거니까 id로 뱃지+1
-                    const query10 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
-                    db.query(query10, [id, 10]);
+                    const query10 = "UPDATE capstone_design.memberbadge SET goal_count = goal_count + 1 WHERE member_id=? and badge_no=? ";
+                    db.query(query10, [id, 10]); 
 
                     db.query(`SELECT board_writer FROM capstone_design.board WHERE board_no=?`,[no], function(err, bw){
 
+                        if(err) console.log(err);
                         //좋아요받기 보드번호로 상대 id 찾아서 그 상대 뱃지 +1
-                        const query11 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
-                        db.query(query11, [bw[0].board_writer, 11]);
-                        const query12 = "UPDATE capstone_design.memberbadge SET goal_count = capstone_design.memberbadge.goal_count + 1 WHERE member_id=? and badge_no=? ";
-                        db.query(query12, [bw[0].board_writer, 12]);
-                       
+                        else{
+                            console.log(bw[0].board_writer);
+                            const query11 = "UPDATE capstone_design.memberbadge SET goal_count = goal_count + 1 WHERE member_id=? and badge_no=? ";
+                            db.query(query11, [bw[0].board_writer, 11]);
+                            console.log("2번째 db 실행");
+                            const query12 = "UPDATE capstone_design.memberbadge SET goal_count = goal_count + 1 WHERE member_id=? and badge_no=? ";
+                            db.query(query12, [bw[0].board_writer, 12] );
+                        }
                     })
-                
-
-
+                    resolve({success : true});
                 }
             });
         });
