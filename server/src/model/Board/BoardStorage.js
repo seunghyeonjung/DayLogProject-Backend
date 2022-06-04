@@ -48,6 +48,16 @@ class BoardStorage{
         });
     }
 
+    static modifyBoard(index, id, content, date, image){
+        return new Promise((resolve, reject)=>{
+            const query="UPDATE capstone_design.board SET board_content=?, board_post_date=?, board_image=? WHERE board_writer=? AND diary_no=?";
+            db.query(query, [content, date, image, id, index] ,(err)=>{
+                if(err) reject(err);
+                else resolve({success : true});
+            });
+        });
+    }
+
     static modifyLike(set, no){
         return new Promise((resolve, reject)=>{
             const query="UPDATE capstone_design.board SET board_like_count="+set+" WHERE board_no=?";
