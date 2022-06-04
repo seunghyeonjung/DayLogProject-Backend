@@ -291,33 +291,39 @@ class Diary{
         try{
             const index=this.req.query.no;
             let where="WHERE member_id=? AND diary_no="+index;
-            const date=(await DiaryStorage.getDiary(this.req.userId, where))[0].date;
-            const year=date.substring(0,4);
-            const month=date.substring(5,7);
-            const last_day=getDay(year, month);
+            const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+            //const date=diary.date;
+            const last_share=diary.shared;
+            //const year=date.substring(0,4);
+            //const month=date.substring(5,7);
+            //const last_day=getDay(year, month);
 
             const res=await DiaryStorage.modifyDiary(index, this.req.userId, this.req.body.content, this.req.body.date, this.req.body.emotion, this.req.body.share);
 
             if(res.success==true){
-                const diary=(await DiaryStorage.getDiary(this.req.userId, where))[0];
-                const share=diary.shared;
-                const content=diary.content;
-                const image=diary.image_url;
-                const like=diary.like_count;
-                console.log(share, content, image, like, date);
+                const {member_id, diary_no, content, date,  image_url, emotion, like_count, shared}=(await DiaryStorage.getDiary(this.req.userId, where))[0];
+                
+                console.log(member_id, diary_no, content, date,  image_url, emotion, shared, like_count);
+                console.log("일기 수정", last_share, shared);
 
-                if(share=='true'){
+                if(last_share=='false' && shared=='true'){
                     console.log("공유 변경으로 인한 추가");
-                    await BoardStorage.saveBoard(this.req.userId, index, content, this.req.body.date, image, like);
+                    await BoardStorage.saveBoard(this.req.userId, diary_no, content, date, image_url, like_count);
                 }
 
-                else if(share=='false'){
+                if(last_share=='true' && shared=='false'){
                     console.log("공유 변경으로 인한 삭제");
-                    where="WHERE board_writer=? AND diary_no="+index;
+                    //where="WHERE board_writer=? AND diary_no="+ diary_no;
                     //const like=(await BoardStorage.getBoard(where, this.req.userId))[0].like_count;
 
                     //await DiaryStorage.modifyLike(like, index);
-                    await BoardStorage.removeBoard(index);
+                    await BoardStorage.removeBoard(diary_no);
+                }
+
+                if(last_share=='true' && shared=='true'){
+
+                    const mes=await BoardStorage.modifyBoard(diary_no, member_id, content, date, image_url);
+                    console.log(mes);
                 }
 
                 
