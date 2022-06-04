@@ -71,9 +71,11 @@ class Diary{
                 where="WHERE member_id=? ORDER BY diary_date DESC limit 0,6";
                 current_diary=await DiaryStorage.getDiary(this.req.userId, where);
 
-                //console.log("current diary : ",current_diary);
+                console.log(month_diary.length, current_diary.length);
 
-                if(month_diary.length==0) return {message : "EMPTY"}           
+                if(month_diary.length==0 && current_diary.length==0) return {message : "EMPTY"};
+                else if(month_diary.length!=0 && current_diary.length==0) return {message : "FILL", month_diary, current_diary : null};
+                else if(month_diary.length==0 && current_diary.length!=0) return {message : "FILL", month_diary : null, current_diary};
                 else return {message : "FILL", month_diary, current_diary};
 
             }

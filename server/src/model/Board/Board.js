@@ -187,7 +187,7 @@ class Board{
             else is_shared=false;
         
             const res=await LikeStorage.getLike(no, this.req.userId);
-            console.log(res);
+            console.log(res, res.length);
             if(res.length!=0){
                 const is_liked=false;
     
@@ -197,7 +197,8 @@ class Board{
 
                 if(mes.success==true){
                     where="WHERE board_no="+no;
-                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, ""))[0];
+                    console.log("좋아요 수 : ", like_count);
                     await DiaryStorage.modifyLike(like_count, this.req.query.no);
                     const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
@@ -214,10 +215,11 @@ class Board{
                 set="board_like_count+1";
                 await BoardStorage.modifyLike(set, no);
                 const mes=await LikeStorage.saveLike(this.req.userId, no);
-
+                console.log(mes);
                 if(mes.success==true){
                     where="WHERE board_no="+no;
-                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, this.req.userId))[0];
+                    const {board_no, diary_no, content, image_url, like_count, date, writer_id}=(await BoardStorage.getBoard(where, ""))[0];
+                    console.log("좋아요 수 : ", like_count);
                     await DiaryStorage.modifyLike(like_count, this.req.query.no);
                     const writer_nickname=(await UserStorage.getUserInfo(writer_id)).nickname;
                     const writer_profile_url=(await ProfileStorage.getProfile(writer_id))[0].profile_src; //test 때만
