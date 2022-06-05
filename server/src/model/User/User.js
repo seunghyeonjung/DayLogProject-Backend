@@ -71,7 +71,7 @@ class User{
 
                     //console.log(userInfo, name, nickname, email, profile_image_url);
 
-                    return { success : true, AT : accessToken, RT : refreshToken, isFirst, name, nickname, profile_image_url, email};
+                    return { success : true, AT : accessToken, RT : refreshToken, id : user.member_id, isFirst, name, nickname, profile_image_url, email};
                 }
                 return { success : false, status : 401, message: "비밀번호가 틀렸습니다." };
             }
