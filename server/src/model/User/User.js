@@ -255,7 +255,7 @@ class User{
             const user=await UserStorage.getUserInfo(this.body.userId);
             const profile=(await ProfileStorage.getProfile(this.body.userId))[0].profile_src;
             console.log(res);
-            if(res.success==true) return {result : "SUCCESS", name : user.name, nickname : user.nickname, profile_image_url : profile, eamil : user.email};
+            if(res.success==true) return {result : "SUCCESS", name : user.name, nickname : user.nickname, profile_image_url : profile, email : user.email};
             else return {result : "FALSE"};
         }catch(err){
             return { result : "FALSE", message : "정보 변경에 실패했습니다."}
