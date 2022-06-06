@@ -328,7 +328,7 @@ class Diary{
 
                 
                 
-                return {edited_diary : diary};
+                return {edited_diary : {diary_no, member_id, date, content, emotion, shared, image_url}};
             }
             return res;
 
